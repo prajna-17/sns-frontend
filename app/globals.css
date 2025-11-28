@@ -497,8 +497,21 @@ body {
 	width: 100%;
 	overflow: hidden;
 	padding: 20px 0;
+
+	cursor: grab;
+	overflow-x: auto;
+	scrollbar-width: none;
+	-ms-overflow-style: none;
+	touch-action: none; /* removes jitter on touch */
 }
 
+.infinite-slider::-webkit-scrollbar {
+	display: none;
+}
+
+.infinite-slider.active {
+	cursor: grabbing;
+}
 .slider {
 	display: flex;
 	gap: 24px;
@@ -526,8 +539,8 @@ body {
 }
 
 .slide-item img {
-	width: 45px;
-	height: 45px;
+	width: 70px;
+	height: 70px;
 	object-fit: contain;
 }
 

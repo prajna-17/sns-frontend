@@ -41,21 +41,63 @@ export default function Carousel() {
 
 	useEffect(() => {
 		const slider = scrollRef.current;
-		let scrollAmount = 0;
+		if (!slider) return;
 
-		const scrollLoop = () => {
-			scrollAmount += 1; // speed
-			slider.scrollLeft = scrollAmount;
+		let isDown = false;
+		let startX = 0;
+		let scrollLeft = 0;
+		let velocity = 0;
+		let rafId = null;
 
-			// reset smoothly
-			if (scrollAmount >= slider.scrollWidth / 2) {
-				scrollAmount = 0;
+		// Apply smooth native scrolling
+		slider.style.scrollBehavior = "auto";
+
+		const updateScroll = () => {
+			slider.scrollLeft -= velocity;
+			velocity *= 0.92; // friction
+
+			if (Math.abs(velocity) > 0.2) {
+				rafId = requestAnimationFrame(updateScroll);
 			}
-
-			requestAnimationFrame(scrollLoop);
 		};
 
-		requestAnimationFrame(scrollLoop);
+		const onPointerDown = (e) => {
+			isDown = true;
+			startX = e.clientX;
+			scrollLeft = slider.scrollLeft;
+			velocity = 0;
+
+			cancelAnimationFrame(rafId);
+			slider.classList.add("active");
+		};
+
+		const onPointerMove = (e) => {
+			if (!isDown) return;
+			const x = e.clientX;
+			const walk = x - startX;
+
+			slider.scrollLeft = scrollLeft - walk;
+			velocity = (walk - velocity) * 0.35; // smooth
+		};
+
+		const onPointerUp = () => {
+			isDown = false;
+			slider.classList.remove("active");
+			rafId = requestAnimationFrame(updateScroll); // momentum
+		};
+
+		slider.addEventListener("pointerdown", onPointerDown);
+		slider.addEventListener("pointermove", onPointerMove);
+		slider.addEventListener("pointerup", onPointerUp);
+		slider.addEventListener("pointerleave", onPointerUp);
+
+		return () => {
+			slider.removeEventListener("pointerdown", onPointerDown);
+			slider.removeEventListener("pointermove", onPointerMove);
+			slider.removeEventListener("pointerup", onPointerUp);
+			slider.removeEventListener("pointerleave", onPointerUp);
+			cancelAnimationFrame(rafId);
+		};
 	}, []);
 
 	useEffect(() => {
