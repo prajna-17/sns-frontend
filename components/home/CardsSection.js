@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 function CardsSection() {
 	const home = [
 		{
@@ -46,20 +48,32 @@ function CardsSection() {
 	];
 	return (
 		<div className="cards-section-cover">
-			<Card bg="#E0F7FA" title="Home Appliances" items={home} />
-			<Card bg=" #f0fff4" title="Furniture" items={furniture} />
+			<Card
+				bg="#E0F7FA"
+				title="Home Appliances"
+				items={home}
+				route="/electronics"
+			/>
+			<Card
+				bg=" #f0fff4"
+				title="Furniture"
+				items={furniture}
+				route="/furniture"
+			/>
 		</div>
 	);
 }
 
 export default CardsSection;
 
-function Card({ bg, title, items }) {
+function Card({ bg, title, items, route }) {
 	return (
 		<div className="section-wrapper" style={{ backgroundColor: bg }}>
 			<div className="section-header">
 				<h2>{title}</h2>
-				<button className="view-all-btn">View All</button>
+				<Link href={`/category/${route}`} className="view-all-btn">
+					View All
+				</Link>
 			</div>
 
 			<div className="section-cards">

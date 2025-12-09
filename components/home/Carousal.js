@@ -43,60 +43,141 @@ export default function Carousel() {
 		const slider = scrollRef.current;
 		if (!slider) return;
 
+		// IMPORTANT: allow vertical panning by default
+		// CSS equivalent below: .infinite-slider { touch-action: pan-y; }
+		slider.style.touchAction = "pan-y";
+
 		let isDown = false;
 		let startX = 0;
-		let scrollLeft = 0;
+		let startY = 0;
+		let scrollStart = 0;
+		let isDragging = false;
+		let lastX = 0;
+		let lastTime = 0;
 		let velocity = 0;
 		let rafId = null;
-
-		// Apply smooth native scrolling
-		slider.style.scrollBehavior = "auto";
-
-		const updateScroll = () => {
-			slider.scrollLeft -= velocity;
-			velocity *= 0.92; // friction
-
-			if (Math.abs(velocity) > 0.2) {
-				rafId = requestAnimationFrame(updateScroll);
-			}
-		};
+		const THRESHOLD = 8; // pixels to decide direction lock
 
 		const onPointerDown = (e) => {
+			// Only left mouse button or touch/pen
+			if (e.pointerType === "mouse" && e.button !== 0) return;
+
 			isDown = true;
+			isDragging = false;
 			startX = e.clientX;
-			scrollLeft = slider.scrollLeft;
+			startY = e.clientY;
+			scrollStart = slider.scrollLeft;
+			lastX = e.clientX;
+			lastTime = performance.now();
 			velocity = 0;
 
-			cancelAnimationFrame(rafId);
-			slider.classList.add("active");
+			// capture pointer so we reliably get pointerup even if cursor leaves
+			try {
+				slider.setPointerCapture(e.pointerId);
+			} catch (err) {
+				// ignore if not supported
+			}
 		};
 
 		const onPointerMove = (e) => {
 			if (!isDown) return;
-			const x = e.clientX;
-			const walk = x - startX;
 
-			slider.scrollLeft = scrollLeft - walk;
-			velocity = (walk - velocity) * 0.35; // smooth
+			const dx = e.clientX - startX;
+			const dy = e.clientY - startY;
+
+			// If not decided yet, check threshold and direction
+			if (!isDragging) {
+				if (Math.abs(dx) < THRESHOLD && Math.abs(dy) < THRESHOLD) {
+					// too small to decide
+					return;
+				}
+				// If vertical movement is greater, we cancel the drag and allow page scroll
+				if (Math.abs(dy) > Math.abs(dx)) {
+					// cancel drag — let page scroll naturally
+					isDown = false;
+					try {
+						slider.releasePointerCapture(e.pointerId);
+					} catch (err) {}
+					return;
+				}
+				// Otherwise treat as horizontal drag
+				isDragging = true;
+				slider.classList.add("active");
+			}
+
+			// At this point we are dragging horizontally — prevent default so page doesn't jump
+			// (Only prevent when we are confirmed horizontal)
+			if (e.cancelable) e.preventDefault();
+
+			const now = performance.now();
+			const dt = Math.max(1, now - lastTime);
+			// compute instantaneous velocity
+			velocity = (e.clientX - lastX) / dt;
+			lastX = e.clientX;
+			lastTime = now;
+
+			// update scroll
+			slider.scrollLeft = scrollStart - dx;
 		};
 
-		const onPointerUp = () => {
+		const startMomentum = () => {
+			// convert px/ms velocity to px/frame (rough)
+			const multiplier = 16; // approx ms per frame
+			let v = velocity * multiplier * -1; // invert to match scroll direction
+
+			const step = () => {
+				// apply friction
+				v *= 0.95;
+				if (Math.abs(v) < 0.1) {
+					cancelAnimationFrame(rafId);
+					rafId = null;
+					return;
+				}
+				slider.scrollLeft += v;
+				rafId = requestAnimationFrame(step);
+			};
+
+			if (rafId) cancelAnimationFrame(rafId);
+			rafId = requestAnimationFrame(step);
+		};
+
+		const onPointerUpOrCancel = (e) => {
+			if (!isDown && !isDragging) {
+				// nothing to do
+				isDown = false;
+				isDragging = false;
+				return;
+			}
+			// release pointer capture
+			try {
+				slider.releasePointerCapture &&
+					slider.releasePointerCapture(e.pointerId);
+			} catch (err) {}
+
 			isDown = false;
+			if (isDragging) {
+				// start momentum based on last recorded velocity
+				startMomentum();
+			}
+			isDragging = false;
 			slider.classList.remove("active");
-			rafId = requestAnimationFrame(updateScroll); // momentum
 		};
 
-		slider.addEventListener("pointerdown", onPointerDown);
+		slider.addEventListener("pointerdown", onPointerDown, {
+			passive: true,
+		});
 		slider.addEventListener("pointermove", onPointerMove);
-		slider.addEventListener("pointerup", onPointerUp);
-		slider.addEventListener("pointerleave", onPointerUp);
+		slider.addEventListener("pointerup", onPointerUpOrCancel);
+		slider.addEventListener("pointercancel", onPointerUpOrCancel);
+		slider.addEventListener("pointerleave", onPointerUpOrCancel);
 
 		return () => {
 			slider.removeEventListener("pointerdown", onPointerDown);
 			slider.removeEventListener("pointermove", onPointerMove);
-			slider.removeEventListener("pointerup", onPointerUp);
-			slider.removeEventListener("pointerleave", onPointerUp);
-			cancelAnimationFrame(rafId);
+			slider.removeEventListener("pointerup", onPointerUpOrCancel);
+			slider.removeEventListener("pointercancel", onPointerUpOrCancel);
+			slider.removeEventListener("pointerleave", onPointerUpOrCancel);
+			if (rafId) cancelAnimationFrame(rafId);
 		};
 	}, []);
 

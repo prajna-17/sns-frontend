@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Search, User, ShoppingCart, MapPin, Menu, X } from "lucide-react";
+import Link from "next/link";
 
 export default function Header() {
 	const [showCategories, setShowCategories] = useState(false);
@@ -43,12 +44,12 @@ export default function Header() {
 					<button className="actionBtn" suppressHydrationWarning>
 						<User size={20} />
 					</button>
-					<button className="actionBtn">
+					<Link href="/cart" className="actionBtn">
 						<ShoppingCart
 							size={20}
 							suppressHydrationWarning
 						/>
-					</button>
+					</Link>
 					<button
 						className="menuBtn mobile-only"
 						onClick={() => setSidebarOpen(true)}
