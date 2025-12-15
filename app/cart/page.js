@@ -1,52 +1,18 @@
 "use client";
 
-function CartPage() {
-	const cartItems = [
-		{
-			id: 109,
-			title: "Dining Table (4 Seater)",
-			image: "/img/ps-dining-table.jpeg",
-			price: 8999,
-			mrp: 15999,
-			off: 44,
-			rating: 4.5,
-			features: [
-				"Elegant wooden dining table design",
-				"Comfortable seating for four people",
-				"Strong and stable construction",
-				"Smooth and easy-to-clean surface",
-				"Perfect for daily meals or gatherings",
-			],
-			description: {
-				heading: "Make Every Meal Special",
-				details: "Bring your family together with this beautifully designed 4-seater dining table that adds warmth and charm to your dining space. Crafted with a smooth, polished surface, it offers ample space for meals, conversations, and celebrations. The sturdy wooden construction ensures long-lasting durability, while the neat design blends seamlessly with various interior styles—from modern apartments to traditional homes. Whether it's daily meals, festive dinners, or weekend get-togethers, this dining table creates the perfect setting for memorable moments. Easy to clean and maintain, it is built for everyday use while offering timeless elegance to your home.",
-			},
-		},
-		{
-			id: 110,
-			title: "Bookshelf Storage Unit",
-			image: "/img/ps-bookshelf.jpeg",
-			price: 3199,
-			mrp: 6499,
-			off: 51,
-			rating: 4.4,
-			features: [
-				"Multi-tier open storage",
-				"Sturdy wooden construction",
-				"Modern minimalist design",
-				"Perfect for books and décor",
-				"Easy to clean and maintain",
-			],
-			description: {
-				heading: "Organize Smart, Display Beautifully",
-				details: "Give your home a functional and stylish upgrade with this versatile bookshelf storage unit designed for modern living. Featuring multiple open tiers, it provides ample space to organize your books, display décor, or store everyday essentials in a neat and elegant manner. Its sturdy wooden build ensures stability and long-lasting use, while the minimalist design enhances the look of any room—study area, living room, or bedroom. The smooth finish makes it easy to clean, and its compact shape helps it fit effortlessly even in smaller spaces. This bookshelf brings together style, function, and convenience to elevate your home décor.",
-			},
-		},
-	];
+import { useDispatch, useSelector } from "react-redux";
+import {
+	decreaseQuantity,
+	increaseQuantity,
+	removeItem,
+} from "../_store/cartSlice";
 
+function CartPage() {
+	const cartItems = useSelector((state) => state.cart.items);
+	const dispatch = useDispatch();
 	const totalMrp = cartItems.reduce((mrp, item) => (mrp += item.mrp), 0);
 	const finalAmount = cartItems.reduce(
-		(price, item) => (price += item.price),
+		(price, item) => (price += item.price * item.quantity),
 		0
 	);
 	const totalDiscount = totalMrp - finalAmount;
@@ -87,12 +53,37 @@ function CartPage() {
 
 							<div className="cart-actions">
 								<div className="qty-box">
-									<button>-</button>
-									<span>{item.qty || 1}</span>
-									<button>+</button>
+									<button
+										onClick={() =>
+											dispatch(
+												decreaseQuantity(
+													item.id
+												)
+											)
+										}
+									>
+										-
+									</button>
+									<span>{item.quantity || 1}</span>
+									<button
+										onClick={() =>
+											dispatch(
+												increaseQuantity(
+													item.id
+												)
+											)
+										}
+									>
+										+
+									</button>
 								</div>
 
-								<button className="delete-btn">
+								<button
+									className="delete-btn"
+									onClick={() =>
+										dispatch(removeItem(item.id))
+									}
+								>
 									Delete
 								</button>
 							</div>

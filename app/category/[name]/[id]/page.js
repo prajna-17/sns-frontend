@@ -1,21 +1,27 @@
 "use client";
 
+import { addItem } from "@/app/_store/cartSlice";
 import { fakeItems } from "@/data/data";
 import { useParams } from "next/navigation";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 
 export default function ProductPage() {
+	//Extra Hooks
+	const dispatch = useDispatch();
+
 	const params = useParams();
 	const { id, name } = params;
 	const product = fakeItems[name].find((obj) => obj.id === +id);
 
+	// State
 	const [showShare, setShowShare] = useState(false);
 	const [showFullDesc, setShowFullDesc] = useState(false);
 
+	// Product Features
 	const productUrl =
 		typeof window !== "undefined" ? window.location.href : "";
 
-	// Calculate delivery date (1 week from now)
 	const deliveryDate = new Date();
 	deliveryDate.setDate(deliveryDate.getDate() + 7);
 	const formattedDate = deliveryDate.toDateString();
@@ -67,7 +73,12 @@ export default function ProductPage() {
 
 					<div className="product-actions">
 						<button className="btn-buy">Buy Now</button>
-						<button className="btn-cart">Add to Cart</button>
+						<button
+							className="btn-cart"
+							onClick={() => dispatch(addItem(product))}
+						>
+							Add to Cart
+						</button>
 					</div>
 				</div>
 
