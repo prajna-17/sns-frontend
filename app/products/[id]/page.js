@@ -1,24 +1,26 @@
 "use client";
 
 import { addItem } from "@/app/_store/cartSlice";
-import { fakeItems } from "@/data/data";
+import { items } from "@/data/data";
 import { useParams } from "next/navigation";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useDispatch } from "react-redux";
 
 export default function ProductPage() {
-	//Extra Hooks
 	const dispatch = useDispatch();
-
 	const params = useParams();
-	const { id, name } = params;
-	const product = fakeItems[name].find((obj) => obj.id === +id);
+	const { id } = params;
 
-	// State
+	// ✅ Correct product lookup
+	const product = useMemo(
+		() => items.find((item) => item.id === Number(id)),
+		[id],
+	);
+
 	const [showShare, setShowShare] = useState(false);
 	const [showFullDesc, setShowFullDesc] = useState(false);
+	const [qty, setQty] = useState(1);
 
-	// Product Features
 	const productUrl =
 		typeof window !== "undefined" ? window.location.href : "";
 
@@ -31,14 +33,24 @@ export default function ProductPage() {
 		alert("Link copied!");
 	};
 
+	// ✅ Not found handling
+	if (!product) {
+		return (
+			<div className="not-found">
+				<h2>Product Not Found</h2>
+			</div>
+		);
+	}
+
 	return (
 		<>
 			<div className="product-container">
-				{/* ---------------- LEFT SIDE ---------------- */}
+				{/* LEFT SIDE */}
 				<div className="product-left">
 					<div className="product-image-box">
 						<img
 							src={product.image}
+							alt={product.title}
 							className="product-image"
 						/>
 
@@ -48,45 +60,49 @@ export default function ProductPage() {
 						>
 							Share
 						</button>
+					</div>
 
-						{/* SHARE POPUP */}
-						{showShare && (
-							<div className="share-popup">
-								<h3>Share this product</h3>
-								<input value={productUrl} readOnly />
-								<button
-									onClick={copyLink}
-									className="copy-btn"
-								>
-									Copy Link
-								</button>
-
-								<button
-									className="close-share"
-									onClick={() => setShowShare(false)}
-								>
-									Close
-								</button>
-							</div>
-						)}
+					{/* Quantity Selector */}
+					<div className="qty-box">
+						<button
+							onClick={() =>
+								setQty((q) => Math.max(1, q - 1))
+							}
+						>
+							-
+						</button>
+						<span>{qty}</span>
+						<button onClick={() => setQty((q) => q + 1)}>
+							+
+						</button>
 					</div>
 
 					<div className="product-actions">
 						<button className="btn-buy">Buy Now</button>
 						<button
 							className="btn-cart"
-							onClick={() => dispatch(addItem(product))}
+							onClick={() =>
+								dispatch(
+									addItem({
+										...product,
+										quantity: qty,
+									}),
+								)
+							}
 						>
 							Add to Cart
 						</button>
 					</div>
 				</div>
 
-				{/* ---------------- RIGHT SIDE ---------------- */}
+				{/* RIGHT SIDE */}
 				<div className="product-right">
 					<div className="tag-new">New Arrival</div>
 
 					<h1 className="pp-product-title">{product.title}</h1>
+
+					{/* Rating */}
+					<div className="rating">⭐ {product.rating} / 5</div>
 
 					<p className="pp-product-desc">
 						{product.description.heading}
@@ -102,7 +118,7 @@ export default function ProductPage() {
 
 					<p className="tax-line">Inclusive of all taxes</p>
 
-					{/* DELIVERY BOX */}
+					{/* DELIVERY */}
 					<div className="delivery-box">
 						<div>
 							<p>
@@ -122,6 +138,8 @@ export default function ProductPage() {
 					</ul>
 				</div>
 			</div>
+
+			{/* LONG DESCRIPTION */}
 			<div className="product-long-description">
 				<p className={showFullDesc ? "expanded" : "collapsed"}>
 					{product.description.details}
@@ -134,6 +152,25 @@ export default function ProductPage() {
 					{showFullDesc ? "Show Less" : "Show More"}
 				</button>
 			</div>
+
+			{/* SHARE MODAL */}
+			{showShare && (
+				<div className="share-overlay">
+					<div className="share-popup">
+						<h3>Share this product</h3>
+						<input value={productUrl} readOnly />
+						<button onClick={copyLink} className="copy-btn">
+							Copy Link
+						</button>
+						<button
+							className="close-share"
+							onClick={() => setShowShare(false)}
+						>
+							Close
+						</button>
+					</div>
+				</div>
+			)}
 		</>
 	);
 }

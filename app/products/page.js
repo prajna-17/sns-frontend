@@ -1,84 +1,84 @@
 "use client";
 
-import { useSearchParams, useRouter, useParams } from "next/navigation";
-import { fakeItems } from "@/data/data";
-import { useState } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+import { items } from "@/data/data";
+import { useState, useMemo } from "react";
 import Link from "next/link";
 
-const allowedCategories = ["electronics", "furniture"];
-
-export default function CategoryPage() {
-	const params = useParams();
-	const { name } = params;
+export default function ProductsPage() {
 	const [showMobileFilters, setShowMobileFilters] = useState(false);
 
 	const router = useRouter();
 	const searchParams = useSearchParams();
 
-	// Pagination Logic
-
+	// Pagination
 	const page = Number(searchParams.get("page")) || 1;
 	const perPage = 8;
 
-	if (!allowedCategories.includes(name)) {
-		return (
-			<div className="p-10 text-red-600 text-3xl">
-				Category not found
-			</div>
-		);
-	}
-
-	let items = fakeItems[name];
-
+	// Filters
 	const ratingFilter = Number(searchParams.get("rating")) || 0;
 	const discountFilter = Number(searchParams.get("discount")) || 0;
 	const maxPriceFilter = Number(searchParams.get("price")) || 0;
 
-	items = items.filter((p) => {
-		if (ratingFilter && p.rating < ratingFilter) return false;
-		if (discountFilter && p.off < discountFilter) return false;
-		if (maxPriceFilter && p.price > maxPriceFilter) return false;
-		return true;
-	});
+	// ✅ Filter logic
+	const filteredItems = useMemo(() => {
+		return items.filter((p) => {
+			if (ratingFilter && p.rating < ratingFilter) return false;
+			if (discountFilter && p.off < discountFilter) return false;
+			if (maxPriceFilter && p.price > maxPriceFilter) return false;
+			return true;
+		});
+	}, [ratingFilter, discountFilter, maxPriceFilter]);
 
-	// Pagination slice
-	const totalPages = Math.ceil(items.length / perPage);
-	const paginatedItems = items.slice((page - 1) * perPage, page * perPage);
+	const totalPages = Math.ceil(filteredItems.length / perPage);
+	const paginatedItems = filteredItems.slice(
+		(page - 1) * perPage,
+		page * perPage,
+	);
 
 	const updateParam = (key, value) => {
 		const params = new URLSearchParams(searchParams.toString());
-		params.set(key, value);
+
+		if (value === "0" || value === 0) {
+			params.delete(key);
+		} else {
+			params.set(key, value);
+		}
+
+		params.set("page", 1); // reset page on filter change
+		router.push(`?${params.toString()}`);
+	};
+
+	const changePage = (newPage) => {
+		const params = new URLSearchParams(searchParams.toString());
+		params.set("page", newPage);
 		router.push(`?${params.toString()}`);
 	};
 
 	return (
-		<div className="category-page">
-			{/* ---------------- TOP HEADER ---------------- */}
+		<div className="products-page">
+			{/* HEADER */}
 			<div className="category-header">
-				<h1 className="category-title">{name.replace("-", " ")}</h1>
+				<h1 className="category-title">All Products</h1>
 			</div>
 
-			{/* ---------------- MOBILE FILTER BUTTON + BACKDROP ---------------- */}
+			{/* MOBILE FILTER BUTTON */}
 			<button
 				className="mobile-filter-btn"
 				onClick={() => setShowMobileFilters(true)}
 			>
 				Filters
 			</button>
+
 			<div
-				className={`filters-backdrop ${
-					showMobileFilters ? "show" : ""
-				}`}
+				className={`filters-backdrop ${showMobileFilters ? "show" : ""}`}
 				onClick={() => setShowMobileFilters(false)}
 			></div>
 
-			{/* ---------------- WRAPPER: FILTERS + CARDS ---------------- */}
 			<div className="category-content-wrapper">
-				{/* ---------------- FILTERS SIDEBAR / MOBILE POPUP ---------------- */}
+				{/* FILTER SIDEBAR */}
 				<div
-					className={`filters-wrapper ${
-						showMobileFilters ? "show" : ""
-					}`}
+					className={`filters-wrapper ${showMobileFilters ? "show" : ""}`}
 				>
 					<h3 className="filters-title">Filters</h3>
 
@@ -135,13 +135,13 @@ export default function CategoryPage() {
 					</button>
 				</div>
 
-				{/* ---------------- PRODUCT CARDS ---------------- */}
+				{/* PRODUCTS GRID */}
 				<div className="category-products">
-					{paginatedItems.map((product, index) => (
+					{paginatedItems.map((product) => (
 						<Link
-							href={`/category/${name}/${product.id}`}
+							href={`/products/${product.id}`}
 							className="product-card"
-							key={index}
+							key={product.id}
 						>
 							<div className="product-img">
 								<img
@@ -172,22 +172,22 @@ export default function CategoryPage() {
 						</Link>
 					))}
 
-					{/* ---------------- PAGINATION ---------------- */}
+					{/* PAGINATION */}
 					<div className="pagination-wrapper">
 						<button
 							disabled={page <= 1}
-							onClick={() => updateParam("page", page - 1)}
+							onClick={() => changePage(page - 1)}
 						>
 							Prev
 						</button>
 
 						<span>
-							{page} / {totalPages}
+							{page} / {totalPages || 1}
 						</span>
 
 						<button
 							disabled={page >= totalPages}
-							onClick={() => updateParam("page", page + 1)}
+							onClick={() => changePage(page + 1)}
 						>
 							Next
 						</button>

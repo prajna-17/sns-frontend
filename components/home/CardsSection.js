@@ -1,29 +1,6 @@
 import Link from "next/link";
 
 function CardsSection() {
-	const home = [
-		{
-			src: "/img/phone-poster.jpg",
-			title: "Mobile Phones",
-			price: "₹28,999",
-		},
-		{
-			src: "/img/headphones-poster.jpg",
-			title: "Headphones",
-			price: "₹19,499",
-		},
-		{
-			src: "/img/pc-poster.jpg",
-			title: "Computer Parts",
-			price: "₹15,299",
-		},
-		{
-			src: "/img/sound-system-poster.jpg",
-			title: "Sound System",
-			price: "₹7,499",
-		},
-	];
-
 	const furniture = [
 		{
 			src: "/img/furniture-1.jpg",
@@ -49,14 +26,8 @@ function CardsSection() {
 	return (
 		<div className="cards-section-cover">
 			<Card
-				bg="#E0F7FA"
-				title="Home Appliances"
-				items={home}
-				route="/electronics"
-			/>
-			<Card
 				bg=" #f0fff4"
-				title="Furniture"
+				title="Products"
 				items={furniture}
 				route="/furniture"
 			/>
@@ -66,12 +37,12 @@ function CardsSection() {
 
 export default CardsSection;
 
-function Card({ bg, title, items, route }) {
+function Card({ bg, title, items }) {
 	return (
 		<div className="section-wrapper" style={{ backgroundColor: bg }}>
 			<div className="section-header">
 				<h2>{title}</h2>
-				<Link href={`/category/${route}`} className="view-all-btn">
+				<Link href={`/products`} className="view-all-btn">
 					View All
 				</Link>
 			</div>

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import React from "react";
 
 export default function PosterGrid() {
@@ -12,12 +13,12 @@ export default function PosterGrid() {
 		<div className="poster-grid-container">
 			<div className="poster-grid">
 				{posters.map((item, i) => (
-					<div className="poster-card" key={i}>
+					<Link href="/products" className="poster-card" key={i}>
 						<div className="poster-img-wrapper">
 							<img src={item.src} alt={item.title} />
 						</div>
 						<p className="poster-title">{item.title}</p>
-					</div>
+					</Link>
 				))}
 			</div>
 		</div>
