@@ -1,83 +1,115 @@
 "use client";
 
-import { items } from "@/data/data";
 import Link from "next/link";
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 export default function ProductSlider() {
-	const sliderRef = useRef(null);
-	const isDown = useRef(false);
-	const startX = useRef(0);
-	const scrollLeft = useRef(0);
+  const sliderRef = useRef(null);
+  const isDown = useRef(false);
+  const startX = useRef(0);
+  const scrollLeft = useRef(0);
 
-	const handleMouseDown = (e) => {
-		isDown.current = true;
-		startX.current = e.pageX - sliderRef.current.offsetLeft;
-		scrollLeft.current = sliderRef.current.scrollLeft;
-	};
+  const [products, setProducts] = useState([]);
 
-	const handleMouseLeave = () => {
-		isDown.current = false;
-	};
+  // 🔥 Fetch all products from backend
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/products");
+        const data = await res.json();
 
-	const handleMouseUp = () => {
-		isDown.current = false;
-	};
+        setProducts(data.data || []);
+      } catch (err) {
+        console.error(err);
+      }
+    };
 
-	const handleMouseMove = (e) => {
-		if (!isDown.current) return;
+    fetchProducts();
+  }, []);
 
-		e.preventDefault();
-		const x = e.pageX - sliderRef.current.offsetLeft;
-		const walk = (x - startX.current) * 1.2;
-		sliderRef.current.scrollLeft = scrollLeft.current - walk;
-	};
+  const handleMouseDown = (e) => {
+    isDown.current = true;
+    startX.current = e.pageX - sliderRef.current.offsetLeft;
+    scrollLeft.current = sliderRef.current.scrollLeft;
+  };
 
-	return (
-		<div className="product-slider-container">
-			<div className="ps-heading-container">
-				<h2 className="ps-heading">Latest Launches</h2>
-				<Link href="/products">View all</Link>
-			</div>
+  const handleMouseLeave = () => {
+    isDown.current = false;
+  };
 
-			<div
-				className="ps-slider"
-				ref={sliderRef}
-				onMouseDown={handleMouseDown}
-				onMouseLeave={handleMouseLeave}
-				onMouseUp={handleMouseUp}
-				onMouseMove={handleMouseMove}
-			>
-				{items
-					.filter((p) => p.category === "furniture")
-					.map((p, i) => (
-						<Link
-							href={`/products/${p.id}`}
-							className="ps-card"
-							key={i}
-						>
-							<img src={p.image} className="ps-img" />
+  const handleMouseUp = () => {
+    isDown.current = false;
+  };
 
-							<div className="ps-title">{p.title}</div>
+  const handleMouseMove = (e) => {
+    if (!isDown.current) return;
 
-							<div className="ps-rating">
-								⭐ {p.rating}
-							</div>
+    e.preventDefault();
+    const x = e.pageX - sliderRef.current.offsetLeft;
+    const walk = (x - startX.current) * 1.2;
+    sliderRef.current.scrollLeft = scrollLeft.current - walk;
+  };
 
-							<div className="ps-price-row">
-								<span className="ps-price-main">
-									₹{p.mrp}
-								</span>
-								<span className="ps-price-discount">
-									₹{p.price}
-								</span>
-								<span className="ps-offer">
-									{p.off}% OFF
-								</span>
-							</div>
-						</Link>
-					))}
-			</div>
-		</div>
-	);
+  return (
+    <div className="product-slider-container">
+      <div className="ps-heading-container">
+        <h2 className="ps-heading">Latest Launches</h2>
+        <Link href="/products">View all</Link>
+      </div>
+
+      <div
+        className="ps-slider"
+        ref={sliderRef}
+        onMouseDown={handleMouseDown}
+        onMouseLeave={handleMouseLeave}
+        onMouseUp={handleMouseUp}
+        onMouseMove={handleMouseMove}
+      >
+        {products.map((p) => {
+          const discount =
+            p.oldPrice && p.oldPrice > p.price
+              ? Math.round(((p.oldPrice - p.price) / p.oldPrice) * 100)
+              : 0;
+
+          return (
+            <Link
+              href={`/products/${p._id}`}
+              className="ps-card"
+              key={p._id}
+              style={{ position: "relative" }}
+            >
+              {discount > 0 && (
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "10px",
+                    right: "10px",
+                    background: "#e53935",
+                    color: "white",
+                    padding: "4px 8px",
+                    fontSize: "12px",
+                    fontWeight: "600",
+                    borderRadius: "20px",
+                  }}
+                >
+                  {discount}% OFF
+                </div>
+              )}
+
+              <img src={p.images?.[0]} className="ps-img" />
+
+              <div className="ps-title">{p.title}</div>
+
+              <div className="ps-rating">⭐ 4.5</div>
+
+              <div className="ps-price-row">
+                <span className="ps-price-main">₹{p.oldPrice}</span>
+                <span className="ps-price-discount">₹{p.price}</span>
+              </div>
+            </Link>
+          );
+        })}
+      </div>
+    </div>
+  );
 }
