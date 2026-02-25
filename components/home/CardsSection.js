@@ -268,7 +268,7 @@ function CardsSection() {
 				}
 			`}</style>
 
-      <div className="cards-section-cover mt-12">
+      <div className="cards-section-cover mt-5">
         <Card
           bg="#FFFDF9"
           title="Products"

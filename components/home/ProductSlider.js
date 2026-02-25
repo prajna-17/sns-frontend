@@ -209,7 +209,6 @@ export default function ProductSlider() {
 
         /* ── Title ── */
         .ps-title {
-          font-family: 'DM Sans', sans-serif;
           font-size: 16.5px;
           font-weight: 700;
           color: #4A3728;
@@ -239,7 +238,6 @@ export default function ProductSlider() {
         .ps-star.off { color: #DDD3CC; }
 
         .ps-rating-count {
-          font-family: 'DM Sans', sans-serif;
           font-size: 10px;
           color: #B0A49C;
           margin-left: 3px;
@@ -247,7 +245,6 @@ export default function ProductSlider() {
 
         /* ── Price ── */
         .ps-price-main {
-          font-family: 'Cormorant Garamond', serif;
           font-size: 22px;
           font-weight: 600;
           color: #1E1410;
@@ -262,13 +259,11 @@ export default function ProductSlider() {
         }
 
         .ps-mrp-label {
-          font-family: 'DM Sans', sans-serif;
           font-size: 10px;
           color: #B0A49C;
         }
 
         .ps-old-price {
-          font-family: 'DM Sans', sans-serif;
           font-size: 11px;
           color: #C0B4AD;
           text-decoration: line-through;

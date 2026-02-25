@@ -5,7 +5,7 @@ import Link from "next/link";
 import { API } from "@/utils/api";
 
 export default function ShowcaseSlider() {
-  const promoImage = "/img/dyson-main.jpeg";
+  const promoImage = "/img/poster-3.jpg";
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -15,16 +15,18 @@ export default function ShowcaseSlider() {
         const superRes = await fetch(`${API}/super-categories`);
         const superData = await superRes.json();
         const superCategories = superData.data || superData;
-        const electronics = superCategories.find(
-          (s) => s.name.toLowerCase() === "electronics",
+        const furniture = superCategories.find(
+          (s) => s.name.toLowerCase() === "furniture",
         );
-        if (!electronics) {
+
+        if (!furniture) {
           setProducts([]);
           setLoading(false);
           return;
         }
+
         const productRes = await fetch(
-          `${API}/products?superCategory=${electronics._id}`,
+          `${API}/products?superCategory=${furniture._id}`,
         );
         const productData = await productRes.json();
         setProducts(productData.data);
@@ -42,12 +44,10 @@ export default function ShowcaseSlider() {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;600&family=DM+Sans:wght@300;400;500;600&display=swap');
 
         /* ── Wrapper ── */
         .showcase-outer {
-          margin: 32px 16px 0;
-          border-radius: 28px;
+margin: 10px 10px 0;          border-radius: 28px;
           background: #1A1A1A;
           padding: 14px;
           box-shadow: 0 20px 60px rgba(0,0,0,0.35);
@@ -258,7 +258,6 @@ export default function ShowcaseSlider() {
 
         /* ── Card Info ── */
         .showcase-card-title {
-          font-family: 'DM Sans', sans-serif;
           font-size: 12px;
           font-weight: 400;
           color: #CCC;
@@ -288,8 +287,7 @@ export default function ShowcaseSlider() {
 
         /* ── Price ── */
         .showcase-price-main {
-          font-family: 'Cormorant Garamond', serif;
-          font-size: 21px;
+          font-size: 18px;
           font-weight: 600;
           color: #fff;
           line-height: 1;
@@ -342,7 +340,7 @@ export default function ShowcaseSlider() {
         <div className="showcase-label">
           <div className="showcase-label-left">
             <div className="showcase-dot" />
-            <h3>Electronics</h3>
+            <h3>FURNITURES</h3>
           </div>
           <Link href="/products" className="showcase-view-all">
             View All
@@ -353,8 +351,8 @@ export default function ShowcaseSlider() {
         <div className="showcase-banner">
           <img src={promoImage} alt="promo" />
           <div className="showcase-banner-badge">
-            <span>Featured Drop</span>
-            <p>Dyson Collection</p>
+            <span>Top Pick</span>
+            <p>Furniture Collection</p>
           </div>
         </div>
 

@@ -56,12 +56,11 @@ export default function Carousel() {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Nunito:wght@300;400;600&display=swap');
 
         /* ── Banner ── */
         .carousel-outer {
           position: relative;
-margin: 16px 4px 0;          border-radius: 24px;
+margin: 0;          border-radius: 24px;
           overflow: hidden;
           height: 210px;
           box-shadow: 0 8px 32px rgba(0,0,0,0.13);
@@ -72,8 +71,7 @@ margin: 16px 4px 0;          border-radius: 24px;
           inset: 0;
           width: 100%;
           height: 100%;
-          object-fit: cover;
-          cursor: pointer;
+object-fit: contain;          cursor: pointer;
           transition: opacity 0.7s cubic-bezier(0.4,0,0.2,1),
                       transform 0.7s cubic-bezier(0.4,0,0.2,1);
           will-change: opacity, transform;
@@ -234,18 +232,17 @@ margin: 16px 4px 0;          border-radius: 24px;
         }
 
         .slide-title {
-          font-family: 'Nunito', sans-serif;
-          font-size: 11px;
-          font-weight: 600;
-          color: #3D3533;
-          text-align: center;
-          margin: 0;
-          line-height: 1.2;
-          max-width: 68px;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-        }
+  font-size: 15px;
+  font-weight: 500;
+  color: #3D3533;
+  text-align: center;
+  margin: 0;
+  line-height: 1.2;
+  max-width: 68px;
+
+  white-space: normal;   /* allow multiple lines */
+  word-break: break-word; /* break long words */
+}
       `}</style>
 
       {/* ── Banner Carousel ── */}

@@ -49,11 +49,10 @@ export default function CategoryShowcase() {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300&family=DM+Sans:wght@300;400;500;600&display=swap');
 
         /* ── Outer Shell ── */
         .cs-outer {
-          margin: 32px 16px 0;
+          margin: 2px 2px 0;
           border-radius: 28px;
           overflow: hidden;
           position: relative;
@@ -86,7 +85,6 @@ export default function CategoryShowcase() {
         .cs-heading-block {}
 
         .cs-eyebrow {
-          font-family: 'DM Sans', sans-serif;
           font-size: 9px;
           font-weight: 500;
           letter-spacing: 3.5px;
@@ -110,7 +108,6 @@ export default function CategoryShowcase() {
         }
 
         .cs-subtext {
-          font-family: 'DM Sans', sans-serif;
           font-size: 11.5px;
           font-weight: 300;
           color: #9B7B68;
@@ -159,7 +156,6 @@ export default function CategoryShowcase() {
           padding: 7px 16px;
           border-radius: 20px;
           border: none;
-          font-family: 'DM Sans', sans-serif;
           font-size: 11px;
           font-weight: 500;
           letter-spacing: 0.5px;
@@ -258,7 +254,6 @@ export default function CategoryShowcase() {
         .cs-badge {
           position: absolute;
           top: 10px; right: 10px;
-          font-family: 'DM Sans', sans-serif;
           font-size: 9px;
           font-weight: 600;
           color: #fff;
@@ -306,7 +301,6 @@ export default function CategoryShowcase() {
 
         /* ── Card Title ── */
         .cs-card-title {
-          font-family: 'DM Sans', sans-serif;
           font-size: 12px;
           font-weight: 400;
           color: #4A3325;
@@ -332,7 +326,6 @@ export default function CategoryShowcase() {
 
         /* ── Price ── */
         .cs-price-main {
-          font-family: 'Cormorant Garamond', serif;
           font-size: 21px;
           font-weight: 600;
           color: #1E1008;
@@ -347,7 +340,6 @@ export default function CategoryShowcase() {
         }
 
         .cs-old-price {
-          font-family: 'DM Sans', sans-serif;
           font-size: 11px;
           color: #C0B0A4;
           text-decoration: line-through;

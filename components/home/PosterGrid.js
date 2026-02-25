@@ -238,9 +238,9 @@ export default function PosterGrid() {
           <h2 className="poster-section-heading">
             Shop by <em>Mood</em>
           </h2>
-          <Link href="/products" className="poster-section-sub">
+          {/* <Link href="/products" className="poster-section-sub">
             All →
-          </Link>
+          </Link> */}
         </div>
 
         {/* Scroll Strip */}

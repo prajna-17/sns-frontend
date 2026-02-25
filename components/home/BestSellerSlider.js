@@ -27,11 +27,10 @@ export default function BestSellerGrid() {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap');
 
         /* ── Outer Shell ── */
         .bs-outer {
-          margin: 36px 16px 0;
+          margin: 4px 2px 0;
           border-radius: 30px;
           overflow: hidden;
           position: relative;
@@ -188,7 +187,6 @@ export default function BestSellerGrid() {
           position: absolute;
           top: 9px; left: 9px;
           z-index: 2;
-          font-family: 'Cormorant Garamond', serif;
           font-size: 13px;
           font-weight: 600;
           color: #7B5438;
@@ -204,7 +202,6 @@ export default function BestSellerGrid() {
           position: absolute;
           top: 9px; right: 9px;
           z-index: 2;
-          font-family: 'DM Sans', sans-serif;
           font-size: 8px;
           font-weight: 600;
           letter-spacing: 1px;
@@ -264,7 +261,6 @@ export default function BestSellerGrid() {
         }
 
         .bs-card-title {
-          font-family: 'DM Sans', sans-serif;
           font-size: 11.5px;
           font-weight: 400;
           color: #3D2B1F;
@@ -278,7 +274,6 @@ export default function BestSellerGrid() {
         }
 
         .bs-card-price {
-          font-family: 'Cormorant Garamond', serif;
           font-size: 18px;
           font-weight: 600;
           color: #7B5438;
@@ -320,7 +315,6 @@ export default function BestSellerGrid() {
         }
 
         .bs-tag {
-          font-family: 'DM Sans', sans-serif;
           font-size: 9px;
           font-weight: 500;
           letter-spacing: 1.5px;
