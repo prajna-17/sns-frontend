@@ -121,7 +121,7 @@ export default function Carousel() {
         </div>
 
         {/* Mobile reverse slider */}
-        <div className="slider mobile-only-slider">
+        {/* <div className="slider mobile-only-slider">
           {categories.map((cat, i) => (
             <div
               key={`${cat._id}-mobile`}
@@ -140,7 +140,7 @@ export default function Carousel() {
               <p className="slide-title">{cat.name}</p>
             </div>
           ))}
-        </div>
+        </div> */}
       </div>
     </>
   );
