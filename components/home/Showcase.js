@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import { API } from "@/utils/api";
 
 export default function ShowcaseSlider() {
   const promoImage = "/img/dyson-main.jpeg";
@@ -13,9 +14,8 @@ export default function ShowcaseSlider() {
     const fetchElectronicsProducts = async () => {
       try {
         // 1️⃣ Get all super categories
-        const superRes = await fetch(
-          "http://localhost:5000/api/super-categories",
-        );
+
+        const superRes = await fetch(`${API}/super-categories`);
         const superData = await superRes.json();
 
         const superCategories = superData.data || superData;
@@ -32,7 +32,7 @@ export default function ShowcaseSlider() {
 
         // 2️⃣ Fetch products with electronics superCategory id
         const productRes = await fetch(
-          `http://localhost:5000/api/products?superCategory=${electronics._id}`,
+          `${API}/products?superCategory=${electronics._id}`,
         );
 
         const productData = await productRes.json();

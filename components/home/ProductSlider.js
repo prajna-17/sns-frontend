@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
+import { API } from "@/utils/api";
 
 export default function ProductSlider() {
   const sliderRef = useRef(null);
@@ -15,7 +16,7 @@ export default function ProductSlider() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/products");
+        const res = await fetch(`${API}/products`);
         const data = await res.json();
 
         setProducts(data.data || []);
