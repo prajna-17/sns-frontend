@@ -7,7 +7,10 @@ import "@/components/admin/confirmModal.css";
 import React, { useState, useEffect } from "react";
 import { useUploadThing } from "@/utils/upload";
 import { API } from "@/utils/api";
-
+const SUPER_IDS = {
+  Furniture: "699d7db8b47815543edfa29c",
+  Electronics: "699d8b96faa37050c8fbf346",
+};
 export default function AdminCategory() {
   const [categories, setCategories] = useState([]);
   const [step, setStep] = useState(1); // 1-super | 2-category | 3-sub
@@ -249,7 +252,7 @@ export default function AdminCategory() {
                     key={s}
                     className={`primary-btn ${superCategory === s ? "active" : ""}`}
                     onClick={() => {
-                      setSuperCategory(s);
+                      setSuperCategory(SUPER_IDS[s]); // store ID instead of name
                       setStep(2);
                     }}
                   >
@@ -419,25 +422,25 @@ export default function AdminCategory() {
                   }
 
                   /* ===== CREATE MODE ===== */
-                  const scRes = await fetch(`${API}/super-categories`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ name: superCategory }),
-                  });
+                  // const scRes = await fetch(`${API}/super-categories`, {
+                  //   method: "POST",
+                  //   headers: { "Content-Type": "application/json" },
+                  //   body: JSON.stringify({ name: superCategory }),
+                  // });
 
-                  let sc;
-                  if (!scRes.ok) {
-                    // already exists → fetch it
-                    const allRes = await fetch(`${API}/super-categories`);
-                    const allData = await allRes.json();
+                  // let sc;
+                  // if (!scRes.ok) {
+                  //   // already exists → fetch it
+                  //   const allRes = await fetch(`${API}/super-categories`);
+                  //   const allData = await allRes.json();
 
-                    sc = allData.data.find(
-                      (x) =>
-                        x.name.toLowerCase() === superCategory.toLowerCase(),
-                    );
-                  } else {
-                    sc = await scRes.json();
-                  }
+                  //   sc = allData.data.find(
+                  //     (x) =>
+                  //       x.name.toLowerCase() === superCategory.toLowerCase(),
+                  //   );
+                  // } else {
+                  //   sc = await scRes.json();
+                  // }
 
                   const catRes = await fetch(`${API}/categories`, {
                     method: "POST",
@@ -445,7 +448,7 @@ export default function AdminCategory() {
                     body: JSON.stringify({
                       name,
                       image,
-                      superCategory: sc._id,
+                      superCategory: superCategory,
                     }),
                   });
                   const cat = await catRes.json();
