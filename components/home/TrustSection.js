@@ -5,7 +5,7 @@ import { Truck, CreditCard, ShieldCheck, Headphones } from "lucide-react";
 
 export default function TrustSection() {
   return (
-    <div className="px-4 mt-6">
+    <div className="px-4 mt-2">
       <div className="grid grid-cols-2 gap-4">
         {/* Free Shipping */}
         <div className="bg-white rounded-3xl p-6 text-center shadow-sm">
