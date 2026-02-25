@@ -89,7 +89,8 @@ export default function Header() {
               className="flex-1 px-5 py-4 text-base bg-transparent text-gray-600 placeholder-gray-500 outline-none"
             />
 
-            <div className="-px-4 text-gray-600">
+            <div className="absolute left-2 text-gray-600">
+              {" "}
               <Search size={24} strokeWidth={2.5} />
             </div>
           </div>
