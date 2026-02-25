@@ -67,78 +67,61 @@ export default function Carousel() {
     "#FFD6A5",
   ];
 
-  {
-    /* 🔥 Banner Carousel */
-  }
   return (
     <>
       {/* 🔥 Banner Carousel */}
-      <div className="px-4 mt-4">
-        <div className="relative overflow-hidden rounded-[28px] shadow-xl bg-white">
-          <img
-            src={banners[current].src}
-            alt="carousel"
-            onClick={() =>
-              router.push(
-                `/products?superCategory=${banners[current].superCategory}`,
-              )
-            }
-            className="w-full h-[190px] object-cover transition-all duration-700 ease-in-out hover:scale-[1.02] active:scale-[0.98]"
-          />
-        </div>
+      <div className="image-carousel-wrapper">
+        <img
+          src={banners[current].src}
+          alt="carousel"
+          className="image-carousel-image"
+          onClick={() =>
+            router.push(
+              `/products?superCategory=${banners[current].superCategory}`,
+            )
+          }
+          style={{ cursor: "pointer" }}
+        />
 
-        {/* Premium Dots */}
-        <div className="flex justify-center gap-2 mt-4">
+        <div className="image-carousel-dots">
           {banners.map((_, index) => (
             <div
               key={index}
+              className={`dot ${current === index ? "active" : ""}`}
               onClick={() => setCurrent(index)}
-              className={`h-[6px] rounded-full transition-all duration-500 cursor-pointer ${
-                current === index ? "w-8 bg-gray-800" : "w-4 bg-gray-300"
-              }`}
-            />
+              style={{
+                "--fill-time": index === 0 ? "8s" : "4s",
+              }}
+            ></div>
           ))}
         </div>
       </div>
 
-      {/* 🔥 Category Grid */}
-      <div className="px-4 mt-6">
-        <div className="grid grid-cols-2 gap-y-8 gap-x-4">
+      {/* 🔥 Category Slider */}
+      <div className="infinite-slider" ref={scrollRef}>
+        <div className="slider">
           {categories.map((cat, i) => (
             <div
               key={cat._id}
+              className="slide-wrapper"
               onClick={() => router.push(`/products?category=${cat._id}`)}
-              className="flex flex-col items-center group cursor-pointer"
+              style={{ cursor: "pointer" }}
             >
-              {/* Card */}
               <div
-                className="w-[150px] h-[150px] rounded-[28px] flex items-center justify-center shadow-md transition-all duration-300 
-              group-hover:shadow-xl group-hover:-translate-y-1 
-              active:scale-95 active:shadow-lg"
+                className="slide-item"
                 style={{
-                  background: `linear-gradient(135deg, ${
-                    colors[i % colors.length]
-                  }, #ffffff)`,
+                  backgroundColor: colors[i % colors.length],
                 }}
               >
-                <img
-                  src={cat.image}
-                  alt={cat.name}
-                  className="w-20 h-20 object-contain transition-transform duration-300 group-hover:scale-110"
-                />
+                <img src={cat.image} alt={cat.name} />
               </div>
-
-              {/* Title */}
-              <p className="mt-4 text-sm font-semibold tracking-wide text-gray-800 text-center">
-                {cat.name}
-              </p>
+              <p className="slide-title">{cat.name}</p>
             </div>
           ))}
         </div>
-      </div>
 
-      {/* Mobile reverse slider */}
-      {/* <div className="slider mobile-only-slider">
+        {/* Mobile reverse slider */}
+        {/* <div className="slider mobile-only-slider">
           {categories.map((cat, i) => (
             <div
               key={`${cat._id}-mobile`}
@@ -158,7 +141,7 @@ export default function Carousel() {
             </div>
           ))}
         </div> */}
-      {/* </div> */}
+      </div>
     </>
   );
 }
