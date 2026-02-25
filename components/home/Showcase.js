@@ -49,122 +49,91 @@ export default function ShowcaseSlider() {
   }, []);
 
   return (
-    <div className="pgs-wrapper">
-      <div className="pgs-left">
-        <img src={promoImage} alt="promo" />
-      </div>
+    <div className="-px-1 mt-10">
+      <div className="bg-[#2b2b2b] rounded-[30px] p-2 shadow-xl">
+        {/* Promo Banner */}
+        <div className="rounded-[24px] overflow-hidden mb-3">
+          <img
+            src={promoImage}
+            alt="promo"
+            className="w-full h-[290px] object-cover transition-transform duration-700 hover:scale-[1.02]"
+          />
+        </div>
 
-      <div className="pgs-right">
-        <div className="pgs-grid">
-          {loading && <p>Loading products...</p>}
+        {/* Products Slider */}
+        <div className="overflow-x-auto no-scrollbar scroll-smooth">
+          <div className="flex gap-2 snap-x snap-mandatory">
+            {loading && (
+              <p className="text-white px-4 py-6">Loading products...</p>
+            )}
 
-          {!loading && products.length === 0 && (
-            <div
-              style={{
-                gridColumn: "1 / -1",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                padding: "100px 20px",
-                position: "relative",
-                overflow: "hidden",
-                color: "white",
-              }}
-            >
-              {/* Soft animated glow background */}
-              <div
-                style={{
-                  position: "absolute",
-                  width: "400px",
-                  height: "400px",
-                  background:
-                    "radial-gradient(circle, rgba(0,0,0,0.08) 0%, transparent 70%)",
-                  animation: "pulseGlow 4s ease-in-out infinite",
-                }}
-              />
-
-              <div
-                style={{
-                  textAlign: "center",
-                  zIndex: 2,
-                  animation: "fadeUp 1s ease forwards",
-                }}
-              >
-                <h2
-                  style={{
-                    fontSize: "32px",
-                    fontWeight: "600",
-                    letterSpacing: "1px",
-                    marginBottom: "12px",
-                  }}
+            {!loading &&
+              products.slice(0, 8).map((p) => (
+                <Link
+                  key={p._id}
+                  href={`/products/${p._id}`}
+                  className="min-w-[180px] snap-start flex-shrink-0"
                 >
-                  No Electronics Available
-                </h2>
+                  <div className="bg-white rounded-[20px] p-4 shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-1 active:scale-95">
+                    {/* Product Image */}
+                    <div className="bg-gray-100 rounded-[16px] h-[160px] flex items-center justify-center overflow-hidden">
+                      <img
+                        src={p.images[0]}
+                        alt={p.title}
+                        className="max-h-[200px] object-contain transition-transform duration-300 hover:scale-105"
+                      />
+                    </div>
 
-                <p
-                  style={{
-                    color: "#666",
-                    fontSize: "16px",
-                    maxWidth: "420px",
-                    margin: "0 auto",
-                    lineHeight: "1.7",
-                  }}
-                >
-                  We're preparing something exceptional for you. Premium
-                  technology products will appear here soon.
-                </p>
-              </div>
+                    {/* Title */}
+                    {/* Title */}
+                    <p className="mt-4 text-sm font-semibold text-gray-800 line-clamp-2">
+                      {p.title}
+                    </p>
 
-              {/* Animations */}
-              <style>
-                {`
-        @keyframes fadeUp {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
+                    {/* Stars */}
+                    <div className="mt-1 flex items-center gap-1 text-2xl">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <span
+                          key={star}
+                          className={`text-base ${
+                            star <= 4 ? "text-yellow-500" : "text-gray-300"
+                          }`}
+                        >
+                          ★
+                        </span>
+                      ))}
+                    </div>
 
-        @keyframes pulseGlow {
-          0% { transform: scale(1); opacity: 0.6; }
-          50% { transform: scale(1.2); opacity: 0.3; }
-          100% { transform: scale(1); opacity: 0.6; }
-        }
-      `}
-              </style>
-            </div>
-          )}
-          {products.slice(0, 4).map((p) => (
-            <Link key={p._id} href={`/products/${p._id}`} className="pgs-card">
-              <div className="pgs-img-box">
-                <img src={p.images[0]} alt={p.title} />
-              </div>
+                    {/* Price Section */}
+                    <div className="mt-1">
+                      {/* Final Price */}
+                      <div className="text-xl font-bold text-gray-900">
+                        ₹{p.price}
+                      </div>
 
-              <p className="pgs-title">{p.title}</p>
+                      {/* Old Price + Discount */}
+                      {p.oldPrice && (
+                        <div className="flex items-center gap-2 mt-1">
+                          <span className="text-sm text-gray-400 whitespace-nowrap">
+                            MRP
+                          </span>
+                          <span className="text-sm text-gray-400 line-through">
+                            ₹{p.oldPrice}
+                          </span>
 
-              <div
-                style={{
-                  fontSize: "14px",
-                  margin: "6px 0",
-                  color: "#f5a623",
-                  fontWeight: "500",
-                }}
-              >
-                ⭐ 4.5
-              </div>
-              <div className="pgs-price-section">
-                <span className="pgs-final-price">₹{p.price}</span>
-
-                {p.oldPrice && (
-                  <span className="pgs-original-price">₹{p.oldPrice}</span>
-                )}
-              </div>
-            </Link>
-          ))}
+                          <span className="text-xs bg-orange-100 text-orange-600 font-semibold px-2 py-1 rounded-full">
+                            {Math.round(
+                              ((p.oldPrice - p.price) / p.oldPrice) * 100,
+                            )}
+                            % OFF
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </Link>
+              ))}
+          </div>
         </div>
       </div>
     </div>

@@ -85,11 +85,11 @@ export default function Header() {
 
             <input
               type="text"
-              placeholder="Search for Product Brands..."
+              placeholder="Search Items..."
               className="flex-1 px-5 py-4 text-base bg-transparent text-gray-600 placeholder-gray-500 outline-none"
             />
 
-            <div className="px-5 text-gray-600">
+            <div className="px-3 text-gray-600">
               <Search size={24} strokeWidth={2.5} />
             </div>
           </div>

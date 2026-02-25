@@ -52,19 +52,29 @@ export default function ProductSlider() {
   };
 
   return (
-    <div className="product-slider-container">
-      <div className="ps-heading-container">
-        <h2 className="ps-heading">Latest Launches</h2>
-        <Link href="/products">View all</Link>
+    <div className="px-4 mt-8">
+      {/* Heading */}
+      <div className="flex items-center justify-between mb-5">
+        <h2 className="text-2xl font-semibold tracking-wide text-gray-900">
+          Latest Launches
+        </h2>
+
+        <Link
+          href="/products"
+          className="text-gray-500 text-sm font-medium hover:text-gray-800 transition"
+        >
+          View All
+        </Link>
       </div>
 
+      {/* Slider */}
       <div
-        className="ps-slider"
         ref={sliderRef}
         onMouseDown={handleMouseDown}
         onMouseLeave={handleMouseLeave}
         onMouseUp={handleMouseUp}
         onMouseMove={handleMouseMove}
+        className="flex gap-2 overflow-x-auto scroll-smooth snap-x snap-mandatory no-scrollbar pb-2"
       >
         {products.map((p) => {
           const discount =
@@ -75,37 +85,69 @@ export default function ProductSlider() {
           return (
             <Link
               href={`/products/${p._id}`}
-              className="ps-card"
               key={p._id}
-              style={{ position: "relative" }}
+              className="min-w-[200px] bg-white rounded-[24px] shadow-md p-4 snap-start 
+                       transition-all duration-300 hover:shadow-xl hover:-translate-y-1 
+                       active:scale-[0.97] relative"
             >
+              {/* Discount Badge */}
               {discount > 0 && (
-                <div
-                  style={{
-                    position: "absolute",
-                    top: "10px",
-                    right: "10px",
-                    background: "#e53935",
-                    color: "white",
-                    padding: "4px 8px",
-                    fontSize: "12px",
-                    fontWeight: "600",
-                    borderRadius: "20px",
-                  }}
-                >
+                <div className="absolute top-3 right-3 bg-orange-500 text-white text-xs font-semibold px-3 py-1 rounded-full shadow-sm">
                   {discount}% OFF
                 </div>
               )}
 
-              <img src={p.images?.[0]} className="ps-img" />
+              {/* Image */}
+              <div className="w-full h-[160px] flex items-center justify-center mb-4">
+                <img
+                  src={p.images?.[0]}
+                  alt={p.title}
+                  className="max-h-full object-contain transition-transform duration-500 hover:scale-105"
+                />
+              </div>
 
-              <div className="ps-title">{p.title}</div>
+              {/* Title */}
+              <div className="text-sm font-semibold text-gray-800 line-clamp-2 mb-1">
+                {p.title}
+              </div>
 
-              <div className="ps-rating">⭐ 4.5</div>
+              {/* Rating */}
+              <div className="mt-1 flex items-center gap-1 text-2xl">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <span
+                    key={star}
+                    className={`text-base ${
+                      star <= 4 ? "text-yellow-500" : "text-gray-300"
+                    }`}
+                  >
+                    ★
+                  </span>
+                ))}
+              </div>
 
-              <div className="ps-price-row">
-                <span className="ps-price-main">₹{p.oldPrice}</span>
-                <span className="ps-price-discount">₹{p.price}</span>
+              {/* Price */}
+              <div className="mt-1">
+                {/* Final Price */}
+                <div className="text-xl font-bold text-gray-900">
+                  ₹{p.price}
+                </div>
+
+                {/* Old Price + Discount */}
+                {p.oldPrice && (
+                  <div className="flex items-center gap-2 mt-1">
+                    <span className="text-sm text-gray-400 whitespace-nowrap">
+                      MRP
+                    </span>
+                    <span className="text-sm text-gray-400 line-through">
+                      ₹{p.oldPrice}
+                    </span>
+
+                    {/* <span className="text-xs bg-orange-100 text-orange-600 font-semibold px-2 py-1 rounded-full">
+                      {Math.round(((p.oldPrice - p.price) / p.oldPrice) * 100)}%
+                      OFF
+                    </span> */}
+                  </div>
+                )}
               </div>
             </Link>
           );
