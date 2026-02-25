@@ -35,72 +35,71 @@ export default function Header() {
 
   return (
     <>
-      <header className="bg-[#111] text-white sticky top-0 z-50 shadow-md">
+      <header className="bg-[#000] rounded-b-[30px] px-4 pt-5 pb-6 shadow-lg">
         {/* Top Row */}
-        <div className="flex items-center justify-between px-4 py-3">
-          <div className="flex items-center gap-3">
+        <div className="flex items-center justify-between mb-5">
+          <div className="flex items-center gap-4">
             <button onClick={() => setSidebarOpen(true)}>
-              <Menu size={22} />
+              <Menu size={26} strokeWidth={2.5} className="text-white" />
             </button>
 
-            <p className="text-lg font-semibold tracking-wide">
-              <span className="text-amber-500">S</span>NS
-            </p>
+            <h1 className="text-2xl font-extrabold italic tracking-wide">
+              <span className="text-orange-500">S</span>NS
+            </h1>
           </div>
 
-          <div className="flex items-center gap-4">
-            <UserMenu />
+          <div className="flex items-center gap-6">
+            <User size={26} strokeWidth={2.5} className="text-white" />
 
             <Link href="/cart" className="relative">
-              <ShoppingCart size={20} />
-
+              <ShoppingCart
+                size={26}
+                strokeWidth={2.5}
+                className="text-white"
+              />
               {cartCount > 0 && (
-                <span className="absolute -top-2 -right-2 bg-amber-500 text-black text-[10px] font-bold min-w-[18px] h-[18px] px-1 flex items-center justify-center rounded-full animate-pulse">
+                <span className="absolute -top-2 -right-2 bg-orange-500 text-black text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full">
                   {cartCount}
                 </span>
               )}
             </Link>
-
-            <div className="hidden sm:flex items-center gap-1 text-sm text-gray-300">
-              <MapPin size={16} />
-              <span>Mumbai</span>
-            </div>
           </div>
         </div>
 
         {/* Search Section */}
-        <div className="px-4 pb-4 relative">
-          <div className="flex items-center bg-white rounded-xl overflow-hidden border border-gray-200 shadow-sm">
+        <div className="relative">
+          <div className="flex items-center bg-[#e9e9e9] rounded-2xl overflow-hidden">
+            {/* Orange Category Section */}
             <button
               onClick={() => setShowCategories(!showCategories)}
-              className="bg-amber-500 text-black text-xs font-semibold px-3 py-3 hover:brightness-95 transition"
+              className="bg-orange-500 text-white text-base font-semibold px-5 py-4"
             >
-              Categories
+              All
             </button>
 
             <input
               type="text"
-              placeholder="Search for items..."
-              className="flex-1 px-3 py-3 text-sm text-black outline-none"
+              placeholder="Search for Product Brands..."
+              className="flex-1 px-5 py-4 text-base bg-transparent text-gray-600 placeholder-gray-500 outline-none"
             />
 
-            <div className="px-3 text-gray-600">
-              <Search size={18} />
+            <div className="px-5 text-gray-600">
+              <Search size={24} strokeWidth={2.5} />
             </div>
           </div>
 
           {showCategories && (
-            <div className="absolute mt-2 w-44 bg-white rounded-xl shadow-xl text-black text-sm animate-[fadeIn_0.2s_ease]">
+            <div className="absolute mt-3 w-44 bg-white rounded-xl shadow-xl text-black text-sm z-50">
               <Link
                 href="/products?superCategory=699d8b96faa37050c8fbf346"
-                className="block px-4 py-3 hover:bg-gray-100 transition"
+                className="block px-4 py-3 hover:bg-gray-100"
               >
                 Electronics
               </Link>
 
               <Link
                 href="/products?superCategory=699d7db8b47815543edfa29c"
-                className="block px-4 py-3 hover:bg-gray-100 transition border-t"
+                className="block px-4 py-3 hover:bg-gray-100 border-t"
               >
                 Furniture
               </Link>
