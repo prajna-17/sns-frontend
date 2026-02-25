@@ -947,7 +947,7 @@ body {
 
 /* Original price */
 .ps-price-main {
-  text-decoration: line-through;
+  /* text-decoration: line-through; */
   color: #888;
   font-size: 14px;
 }
@@ -1311,7 +1311,7 @@ body {
 }
 
 .product-mrp {
-  text-decoration: line-through;
+  /* text-decoration: line-through; */
   color: #999;
 }
 
@@ -1556,7 +1556,7 @@ body {
 
 .pp-mrp {
   color: #999;
-  text-decoration: line-through;
+  /* text-decoration: line-through; */
 }
 
 .pp-off {
@@ -1755,7 +1755,7 @@ body {
 }
 
 .cart-price-row .mrp {
-  text-decoration: line-through;
+  /* text-decoration: line-through; */
   color: #888;
 }
 

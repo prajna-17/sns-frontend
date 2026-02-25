@@ -33,12 +33,7 @@ function CardsSection() {
 					--card-radius: 20px;
 				}
 
-				.cards-section-cover {
-					background: var(--cream);
-					min-height: 100vh;
-					padding: 0 0 40px 0;
-					font-family: 'DM Sans', sans-serif;
-				}
+			cards-section-cover
 
 				.section-wrapper {
 					background: var(--warm-white);
@@ -256,7 +251,7 @@ function CardsSection() {
 					display: flex;
 					gap: 5px;
 					justify-content: center;
-					padding-bottom: 8px;
+					padding-bottom: 50px;
 				}
 
 				.scroll-dot {
