@@ -5,6 +5,7 @@ import CategoryShowcase from "@/components/home/CategoryShowcase";
 import PosterGrid from "@/components/home/PosterGrid";
 import ProductSlider from "@/components/home/ProductSlider";
 import ShowcaseSlider from "@/components/home/Showcase";
+import TrustSection from "@/components/home/TrustSection";
 
 function page() {
   return (
@@ -16,6 +17,7 @@ function page() {
       <CategoryShowcase />
       <BestSellerSlider />
       <CardsSection />
+      <TrustSection />
     </main>
   );
 }
