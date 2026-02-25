@@ -44,7 +44,13 @@ export default function Header() {
             </button>
 
             <h1 className="text-2xl font-extrabold italic tracking-wide">
-              <span className="text-orange-500">S</span>NS
+              <Link
+                href="/"
+                className="text-2xl font-extrabold italic tracking-wide"
+              >
+                <span className="text-orange-500">S</span>
+                <span className="text-white">NS</span>
+              </Link>
             </h1>
           </div>
 
