@@ -60,7 +60,6 @@ function CardsSection() {
 				}
 
 				.section-header h2 {
-					font-family: 'Cormorant Garamond', serif;
 					font-size: 36px;
 					font-weight: 300;
 					letter-spacing: -0.5px;
@@ -72,7 +71,6 @@ function CardsSection() {
 				.section-header h2 span {
 					display: block;
 					font-size: 12px;
-					font-family: 'DM Sans', sans-serif;
 					font-weight: 500;
 					letter-spacing: 3px;
 					text-transform: uppercase;
@@ -81,7 +79,6 @@ function CardsSection() {
 				}
 
 				.view-all-btn {
-					font-family: 'DM Sans', sans-serif;
 					font-size: 11px;
 					font-weight: 500;
 					letter-spacing: 2px;
@@ -183,7 +180,6 @@ function CardsSection() {
 					display: flex;
 					align-items: center;
 					justify-content: center;
-					font-family: 'Cormorant Garamond', serif;
 					font-size: 13px;
 					font-weight: 600;
 					color: var(--bark);
@@ -196,7 +192,6 @@ function CardsSection() {
 				}
 
 				.card-title {
-					font-family: 'DM Sans', sans-serif;
 					font-size: 13px;
 					font-weight: 500;
 					color: var(--bark);
@@ -208,7 +203,6 @@ function CardsSection() {
 				}
 
 				.card-price {
-					font-family: 'Cormorant Garamond', serif;
 					font-size: 17px;
 					font-weight: 600;
 					color: var(--clay);
