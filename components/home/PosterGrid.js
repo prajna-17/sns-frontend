@@ -235,9 +235,9 @@ export default function PosterGrid() {
       <div className="poster-section">
         {/* Header */}
         <div className="poster-section-header">
-          <h2 className="poster-section-heading">
+          {/* <h2 className="poster-section-heading">
             Shop by <em>Mood</em>
-          </h2>
+          </h2> */}
           {/* <Link href="/products" className="poster-section-sub">
             All →
           </Link> */}
