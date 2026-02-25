@@ -67,7 +67,6 @@ export default function ProductSlider() {
         .ps-heading-wrap {}
 
         .ps-eyebrow {
-          font-family: 'DM Sans', sans-serif;
           font-size: 10px;
           font-weight: 500;
           letter-spacing: 3px;
@@ -77,7 +76,6 @@ export default function ProductSlider() {
         }
 
         .ps-heading {
-          font-family: 'Cormorant Garamond', serif;
           font-size: 32px;
           font-weight: 300;
           color: #1E1410;
@@ -86,7 +84,6 @@ export default function ProductSlider() {
         }
 
         .ps-view-all {
-          font-family: 'DM Sans', sans-serif;
           font-size: 10px;
           font-weight: 500;
           letter-spacing: 2.5px;
@@ -159,7 +156,6 @@ export default function ProductSlider() {
           position: absolute;
           top: 12px;
           right: 12px;
-          font-family: 'DM Sans', sans-serif;
           font-size: 9px;
           font-weight: 600;
           letter-spacing: 0.5px;
