@@ -1,13 +1,15 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import Image from "next/image";
 import { API } from "@/utils/api";
+import "./details.css";
 
 export default function ProductGallery({ images = [] }) {
   const [active, setActive] = useState(0);
+  const [entering, setEntering] = useState(false);
 
-  // 🔥 Normalize image URLs (handles filename or full URL)
+  // ── same backend logic (untouched) ──
   const formattedImages = useMemo(() => {
     return images.map((img) => {
       if (img.startsWith("http")) return img;
@@ -15,51 +17,110 @@ export default function ProductGallery({ images = [] }) {
     });
   }, [images]);
 
+  // Animate on image switch
+  const switchImage = useCallback(
+    (index) => {
+      if (index === active) return;
+      setEntering(true);
+      setActive(index);
+      setTimeout(() => setEntering(false), 380);
+    },
+    [active],
+  );
+
+  const prev = () =>
+    switchImage((active - 1 + formattedImages.length) % formattedImages.length);
+  const next = () => switchImage((active + 1) % formattedImages.length);
+
+  // ── Empty state ──
   if (!formattedImages.length) {
     return (
-      <div className="bg-white p-6 rounded-2xl">
-        <div className="h-[450px] flex items-center justify-center bg-gray-100 rounded-xl">
-          No Image Available
+      <div className="d-gallery">
+        <div className="d-gallery-empty">
+          <div className="d-gallery-empty-icon">🖼️</div>
+          <span>No Image Available</span>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="bg-white p-6 rounded-2xl shadow-sm">
-      {/* MAIN IMAGE */}
-      <div className="relative w-full h-[480px] bg-[#f3f3f3] rounded-2xl overflow-hidden flex items-center justify-center">
+    <div className="d-gallery">
+      {/* ── MAIN STAGE ── */}
+      <div className="d-gallery-stage">
+        {/* Image counter */}
+        <div className="d-gallery-counter">
+          <strong>{active + 1}</strong> / {formattedImages.length}
+        </div>
+
+        {/* Share button */}
+        <button
+          className="d-gallery-share"
+          onClick={() => {
+            if (navigator.share) {
+              navigator.share({ url: window.location.href });
+            } else {
+              navigator.clipboard?.writeText(window.location.href);
+            }
+          }}
+          title="Share"
+        >
+          🔗
+        </button>
+
+        {/* Prev / Next arrows (only if multiple images) */}
+        {formattedImages.length > 1 && (
+          <>
+            <button
+              className="d-gallery-arrow prev"
+              onClick={prev}
+              disabled={false}
+            >
+              ‹
+            </button>
+            <button
+              className="d-gallery-arrow next"
+              onClick={next}
+              disabled={false}
+            >
+              ›
+            </button>
+          </>
+        )}
+
+        {/* Main image */}
         <Image
           src={formattedImages[active]}
           alt="product"
           fill
           priority
-          className="object-contain transition-transform duration-300 hover:scale-105"
+          className={`d-gallery-img ${entering ? "entering" : ""}`}
         />
 
-        {/* SHARE BUTTON */}
-        <button className="absolute top-4 right-4 bg-white shadow-md rounded-full p-3 hover:scale-105 transition">
-          🔗
-        </button>
+        {/* Dot indicators */}
+        {formattedImages.length > 1 && (
+          <div className="d-gallery-dots">
+            {formattedImages.map((_, i) => (
+              <div
+                key={i}
+                className={`d-gallery-dot ${i === active ? "active" : ""}`}
+                onClick={() => switchImage(i)}
+              />
+            ))}
+          </div>
+        )}
       </div>
 
-      {/* THUMBNAILS */}
+      {/* ── THUMBNAILS ── */}
       {formattedImages.length > 1 && (
-        <div className="flex gap-4 mt-6 justify-center">
+        <div className="d-gallery-thumbs">
           {formattedImages.map((img, index) => (
             <div
               key={index}
-              onClick={() => setActive(index)}
-              className={`relative w-20 h-20 rounded-xl cursor-pointer border transition ${
-                active === index ? "border-black scale-105" : "border-gray-200"
-              }`}
+              className={`d-gallery-thumb ${active === index ? "active" : ""}`}
+              onClick={() => switchImage(index)}
             >
-              <Image
-                src={img}
-                alt="thumb"
-                fill
-                className="object-contain p-2"
-              />
+              <Image src={img} alt={`thumb-${index}`} fill className="" />
             </div>
           ))}
         </div>

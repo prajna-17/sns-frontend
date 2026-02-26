@@ -1,91 +1,178 @@
 "use client";
 
 import { useState } from "react";
+import "./details.css";
 
 export default function ProductTabs({ product }) {
   const [active, setActive] = useState("description");
   const [expanded, setExpanded] = useState(false);
 
+  // ── same backend logic (untouched) ──
   const tabs = ["description", "reviews", "return & refund"];
 
+  const avgRating =
+    product.reviews && product.reviews.length > 0
+      ? (
+          product.reviews.reduce((sum, r) => sum + (r.rating || 0), 0) /
+          product.reviews.length
+        ).toFixed(1)
+      : null;
+
   return (
-    <div className="bg-white mt-6 p-6 rounded-2xl shadow-sm">
-      {/* TAB BUTTONS */}
-      <div className="flex gap-4 mb-6 flex-wrap">
+    <div className="d-tabs-wrapper">
+      {/* ── TAB BAR ── */}
+      <div className="d-tabs-bar">
         {tabs.map((tab) => (
           <button
             key={tab}
-            onClick={() => setActive(tab)}
-            className={`px-5 py-2 rounded-full text-sm capitalize transition-all duration-300 ${
-              active === tab
-                ? "bg-black text-white"
-                : "bg-gray-100 hover:bg-gray-200"
-            }`}
+            onClick={() => {
+              setActive(tab);
+              setExpanded(false);
+            }}
+            className={`d-tab-btn ${active === tab ? "active" : ""}`}
           >
-            {tab}
+            {tab === "description" && <span className="d-tab-icon"></span>}
+            {tab === "reviews" && <span className="d-tab-icon"></span>}
+            {tab === "return & refund" && <span className="d-tab-icon"></span>}
+            <span className="d-tab-label">{tab}</span>
+            {tab === "reviews" && avgRating && (
+              <span className="d-tab-pill">{avgRating}</span>
+            )}
+            {tab === "reviews" && product.reviews?.length > 0 && (
+              <span className="d-tab-pill">{product.reviews.length}</span>
+            )}
           </button>
         ))}
+        {/* sliding ink bar */}
+        <div
+          className="d-tab-ink"
+          style={{ "--tab-index": tabs.indexOf(active) }}
+        />
       </div>
 
-      {/* DESCRIPTION TAB */}
-      {active === "description" && (
-        <div className="relative">
-          <p
-            className={`text-gray-600 transition-all duration-500 ease-in-out ${
-              expanded ? "max-h-[1000px]" : "max-h-[100px]"
-            } overflow-hidden`}
-          >
-            {product.description}
-          </p>
-
-          {!expanded && (
-            <div className="absolute bottom-0 left-0 w-full h-10 bg-gradient-to-t from-white to-transparent pointer-events-none" />
-          )}
-
-          <button
-            onClick={() => setExpanded(!expanded)}
-            className="mt-4 border border-orange-500 text-orange-500 px-4 py-2 rounded-lg text-sm hover:bg-orange-50 transition"
-          >
-            {expanded ? "View Less" : "View More"}
-          </button>
-        </div>
-      )}
-
-      {/* REVIEWS TAB */}
-      {active === "reviews" && (
-        <div className="space-y-4">
-          {product.reviews && product.reviews.length > 0 ? (
-            product.reviews.map((review, index) => (
-              <div key={index} className="border rounded-xl p-4 space-y-2">
-                <div className="flex justify-between items-center">
-                  <span className="font-medium">
-                    {review.user || "Anonymous"}
-                  </span>
-                  <span className="text-sm text-gray-500">
-                    ⭐ {review.rating}
-                  </span>
-                </div>
-
-                <p className="text-gray-600 text-sm">{review.comment}</p>
-              </div>
-            ))
-          ) : (
-            <div className="text-center text-gray-500 py-10">
-              ⭐ No reviews yet
+      {/* ── CONTENT PANEL ── */}
+      <div className="d-tabs-panel">
+        {/* DESCRIPTION */}
+        {active === "description" && (
+          <div className="d-tab-content d-tab-desc" key="description">
+            <div className="d-tab-desc-body">
+              <p className={`d-tab-desc-text ${expanded ? "expanded" : ""}`}>
+                {product.description}
+              </p>
+              {!expanded && <div className="d-tab-fade" />}
             </div>
-          )}
-        </div>
-      )}
+            <button
+              className="d-tab-expand-btn"
+              onClick={() => setExpanded(!expanded)}
+            >
+              {expanded ? "Show Less ↑" : "Read Full Description ↓"}
+            </button>
+          </div>
+        )}
 
-      {/* RETURN & REFUND TAB */}
-      {active === "return & refund" && (
-        <div className="text-gray-600 space-y-3 text-sm">
-          <p>We offer a 7-day return policy from the date of delivery.</p>
-          <p>The product must be unused and in original packaging.</p>
-          <p>Refunds are processed within 5–7 business days after approval.</p>
-          <p>For assistance, contact customer support through your account.</p>
-        </div>
-      )}
+        {/* REVIEWS */}
+        {active === "reviews" && (
+          <div className="d-tab-content" key="reviews">
+            {product.reviews && product.reviews.length > 0 ? (
+              <>
+                {/* summary row */}
+                <div className="d-reviews-summary">
+                  <div className="d-reviews-avg">{avgRating}</div>
+                  <div className="d-reviews-meta">
+                    <div className="d-reviews-stars">
+                      {"★".repeat(Math.round(avgRating))}
+                      {"☆".repeat(5 - Math.round(avgRating))}
+                    </div>
+                    <p className="d-reviews-count">
+                      {product.reviews.length} review
+                      {product.reviews.length !== 1 ? "s" : ""}
+                    </p>
+                  </div>
+                </div>
+                <div className="d-divider" />
+                <div className="d-reviews-list">
+                  {product.reviews.map((review, index) => (
+                    <div
+                      key={index}
+                      className="d-review-card"
+                      style={{ animationDelay: `${index * 0.07}s` }}
+                    >
+                      <div className="d-review-header">
+                        <div className="d-review-avatar">
+                          {(review.user || "A")[0].toUpperCase()}
+                        </div>
+                        <div className="d-review-user-info">
+                          <span className="d-review-name">
+                            {review.user || "Anonymous"}
+                          </span>
+                          <div className="d-review-stars-small">
+                            {"★".repeat(review.rating)}
+                            {"☆".repeat(5 - review.rating)}
+                          </div>
+                        </div>
+                        <span className="d-review-rating-badge">
+                          {review.rating}/5
+                        </span>
+                      </div>
+                      <p className="d-review-comment">{review.comment}</p>
+                    </div>
+                  ))}
+                </div>
+              </>
+            ) : (
+              <div className="d-reviews-empty">
+                <div className="d-reviews-empty-icon">💬</div>
+                <p className="d-reviews-empty-title">No reviews yet</p>
+                <p className="d-reviews-empty-sub">
+                  Be the first to share your thoughts
+                </p>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* RETURN & REFUND */}
+        {active === "return & refund" && (
+          <div className="d-tab-content" key="return">
+            <div className="d-refund-list">
+              {[
+                {
+                  icon: "📦",
+                  title: "7-Day Returns",
+                  body: "Return within 7 days of delivery, no questions asked.",
+                },
+                {
+                  icon: "✅",
+                  title: "Original Condition",
+                  body: "Product must be unused and in its original packaging.",
+                },
+                {
+                  icon: "💳",
+                  title: "Fast Refunds",
+                  body: "Refunds processed within 5–7 business days after approval.",
+                },
+                {
+                  icon: "🎧",
+                  title: "Need Help?",
+                  body: "Contact customer support through your account anytime.",
+                },
+              ].map((item, i) => (
+                <div
+                  key={i}
+                  className="d-refund-item"
+                  style={{ animationDelay: `${i * 0.08}s` }}
+                >
+                  <div className="d-refund-icon">{item.icon}</div>
+                  <div className="d-refund-body">
+                    <p className="d-refund-title">{item.title}</p>
+                    <p className="d-refund-text">{item.body}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

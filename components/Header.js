@@ -19,20 +19,26 @@ export default function Header() {
   const [cartCount, setCartCount] = useState(0);
 
   useEffect(() => {
+    const getCartKey = () => {
+      const userId = localStorage.getItem("userId"); // adjust if needed
+      return userId ? `cart_${userId}` : "cart_guest";
+    };
+
     const loadCart = () => {
-      const cart = JSON.parse(localStorage.getItem("cart")) || [];
-      const totalItems = cart.reduce(
-        (total, item) => total + (item.quantity || 1),
-        0,
-      );
-      setCartCount(totalItems);
+      const cart = JSON.parse(localStorage.getItem(getCartKey())) || [];
+
+      // 🔥 Count UNIQUE items only
+      setCartCount(cart.length);
     };
 
     loadCart();
-    window.addEventListener("storage", loadCart);
-    return () => window.removeEventListener("storage", loadCart);
-  }, []);
 
+    window.addEventListener("cart-updated", loadCart);
+
+    return () => {
+      window.removeEventListener("cart-updated", loadCart);
+    };
+  }, []);
   return (
     <>
       <header className="bg-[#000] rounded-b-[30px] px-4 pt-5 pb-6 shadow-lg">
