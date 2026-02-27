@@ -136,10 +136,8 @@ export default function LoginPage() {
     }
 
     setLoading(true);
-    show("Sending OTP to your phone...", "info");
     await new Promise((r) => setTimeout(r, 1800));
     setLoading(false);
-    show("OTP sent successfully! ", "success");
     setTimeout(() => setStep(2), 400);
   };
 
