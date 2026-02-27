@@ -167,8 +167,6 @@ export default function LoginPage() {
 
   return (
     <>
-      <style dangerouslySetInnerHTML={{ __html: STYLES }} />
-
       <div className="lp-root">
         <div className="lp-blob lp-blob-1" />
         <div className="lp-blob lp-blob-2" />
