@@ -746,7 +746,6 @@ function triggerVibration() {
 
 export default function OrderConfirmPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const cartItems = useSelector((state) => state.cart.items);
 
   const [mounted, setMounted] = useState(false);
@@ -757,7 +756,7 @@ export default function OrderConfirmPage() {
 
   useEffect(() => {
     setMounted(true);
-    const id = searchParams.get("id");
+    const id = new URLSearchParams(window.location.search).get("id");
     if (id) setOrderId(id);
 
     if (!localStorage.getItem("loggedIn")) {
