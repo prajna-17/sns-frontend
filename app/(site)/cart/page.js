@@ -6,7 +6,7 @@ import {
   increaseQuantity,
   removeItem,
 } from "@/app/_store/cartSlice";
-
+import { useRouter } from "next/navigation";
 // ── Styles ────────────────────────────────────────────────────────────────────
 const STYLES = `
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
@@ -388,6 +388,7 @@ function CartPage() {
   // ── same backend logic (untouched) ──
   const cartItems = useSelector((state) => state.cart.items);
   const dispatch = useDispatch();
+  const router = useRouter();
 
   const totalMrp = cartItems.reduce(
     (mrp, item) => mrp + (item.oldPrice || 0) * item.qty,
@@ -525,7 +526,17 @@ function CartPage() {
                 </div>
               )}
 
-              <button className="cp-checkout-btn">
+              <button
+                className="cp-checkout-btn"
+                onClick={() => {
+                  const loggedIn = localStorage.getItem("loggedIn");
+                  if (loggedIn) {
+                    router.push("/checkout");
+                  } else {
+                    router.push("/login");
+                  }
+                }}
+              >
                 <span>Proceed to Checkout</span>
                 <span>→</span>
               </button>
