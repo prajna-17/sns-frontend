@@ -646,7 +646,7 @@ export default function CheckoutPage() {
     setLoading(false);
     const id =
       "LVO-" + Math.random().toString(36).substring(2, 8).toUpperCase();
-    router.push(`/order-confirmed?id=${id}`);
+    router.push(`/order-confirm?id=${id}`);
   };
 
   return (
