@@ -431,21 +431,6 @@ const CONTACT_DATA = [
   },
 ];
 
-const GUIDES = [
-  {
-    title: "How to Place an Order",
-    desc: "Complete guide to ordering",
-  },
-  {
-    title: "Update Delivery Address",
-    desc: "Change address before delivery",
-  },
-  {
-    title: "Track Refunds",
-    desc: "Check your refund status",
-  },
-];
-
 export default function HelpSupportPage() {
   const [expandedFaq, setExpandedFaq] = useState(null);
 
