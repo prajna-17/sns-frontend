@@ -496,21 +496,6 @@ export default function HelpSupportPage() {
           </div>
 
           {/* User Guides */}
-          <div className="help-section">
-            <h2 className="help-section-title"> User Guides</h2>
-            {GUIDES.map((guide, idx) => (
-              <div key={idx} className="help-guide-item">
-                <div className="help-guide-content">
-                  <div className="help-guide-icon">{guide.icon}</div>
-                  <div className="help-guide-text">
-                    <p className="help-guide-title">{guide.title}</p>
-                    <p className="help-guide-desc">{guide.desc}</p>
-                  </div>
-                </div>
-                <ChevronRight size={18} color="#667eea" />
-              </div>
-            ))}
-          </div>
 
           {/* Contact Section */}
           <div className="help-section">
