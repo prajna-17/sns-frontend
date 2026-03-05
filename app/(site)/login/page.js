@@ -136,15 +136,18 @@ export default function LoginPage() {
     }
 
     setLoading(true);
-    const res = await fetch("http://localhost:5000/api/auth/send-otp", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+    const res = await fetch(
+      "https://sudhir-and-sons-backend.vercel.app/api/auth/send-otp",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: form.email,
+        }),
       },
-      body: JSON.stringify({
-        email: form.email,
-      }),
-    });
+    );
 
     const data = await res.json();
 
@@ -167,17 +170,20 @@ export default function LoginPage() {
 
     setLoading(true);
     show("Verifying your code...", "info");
-    const res = await fetch("http://localhost:5000/api/auth/verify-otp", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+    const res = await fetch(
+      "https://sudhir-and-sons-backend.vercel.app/api/auth/verify-otp",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: form.email,
+          otp: otp,
+          name: form.name,
+        }),
       },
-      body: JSON.stringify({
-        email: form.email,
-        otp: otp,
-        name: form.name,
-      }),
-    });
+    );
 
     const data = await res.json();
 
