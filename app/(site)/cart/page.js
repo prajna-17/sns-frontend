@@ -461,9 +461,10 @@ function CartPage() {
                         <div className="cp-qty">
                           <button
                             className="cp-qty-btn"
-                            onClick={() =>
-                              dispatch(decreaseQuantity(item.variantId))
-                            }
+                            onClick={() => {
+                              dispatch(decreaseQuantity(item.variantId));
+                              window.dispatchEvent(new Event("cart-updated"));
+                            }}
                           >
                             −
                           </button>
@@ -472,16 +473,20 @@ function CartPage() {
                           </span>
                           <button
                             className="cp-qty-btn"
-                            onClick={() =>
-                              dispatch(increaseQuantity(item.variantId))
-                            }
+                            onClick={() => {
+                              dispatch(increaseQuantity(item.variantId));
+                              window.dispatchEvent(new Event("cart-updated"));
+                            }}
                           >
                             +
                           </button>
                         </div>
                         <button
                           className="cp-remove-btn"
-                          onClick={() => dispatch(removeItem(item.variantId))}
+                          onClick={() => {
+                            dispatch(removeItem(item.variantId));
+                            window.dispatchEvent(new Event("cart-updated"));
+                          }}
                         >
                           Remove
                         </button>
