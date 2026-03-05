@@ -35,7 +35,12 @@ export default function Header() {
 
       const cart = cartData ? JSON.parse(cartData) : [];
 
-      setCartCount(cart.length);
+      const totalItems = cart.reduce(
+        (sum, item) => sum + (item.quantity || 1),
+        0,
+      );
+
+      setCartCount(totalItems);
     };
 
     const checkLogin = () => {
