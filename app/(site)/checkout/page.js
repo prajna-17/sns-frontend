@@ -354,9 +354,6 @@ const STATES = [
   "Puducherry",
 ];
 
-const user = JSON.parse(localStorage.getItem("userData"));
-const userEmail = user?.email;
-
 let _tid = 0;
 function useToasts() {
   const [toasts, setToasts] = useState([]);
@@ -624,10 +621,20 @@ export default function CheckoutPage() {
   const [drawer, setDrawer] = useState(false);
   const [address, setAddress] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [userEmail, setUserEmail] = useState(null);
 
   useEffect(() => {
     setMounted(true);
-    if (!localStorage.getItem("loggedIn")) router.push("/login");
+
+    if (typeof window === "undefined") return;
+
+    if (!localStorage.getItem("loggedIn")) {
+      router.push("/login");
+      return;
+    }
+
+    const user = JSON.parse(localStorage.getItem("userData")) || {};
+    setUserEmail(user.email);
   }, []);
 
   if (!mounted) return null;
