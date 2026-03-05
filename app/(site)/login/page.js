@@ -136,7 +136,25 @@ export default function LoginPage() {
     }
 
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 1800));
+    const res = await fetch("http://localhost:5000/api/auth/send-otp", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: form.email,
+      }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      show(data.message || "Failed to send OTP", "error");
+      setLoading(false);
+      return;
+    }
+
+    show("OTP sent to your email 📧", "success");
     setLoading(false);
     setTimeout(() => setStep(2), 400);
   };
@@ -149,17 +167,44 @@ export default function LoginPage() {
 
     setLoading(true);
     show("Verifying your code...", "info");
-    await new Promise((r) => setTimeout(r, 1600));
-    setLoading(false);
+    const res = await fetch("http://localhost:5000/api/auth/verify-otp", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: form.email,
+        otp: otp,
+        name: form.name,
+      }),
+    });
 
-    if (otp === "000000") {
-      show("Invalid OTP. Please try again ❌", "error");
+    const data = await res.json();
+
+    if (!res.ok) {
+      show(data.message || "OTP verification failed", "error");
+      setLoading(false);
       return;
     }
 
     show("Verified! Redirecting you... ✅", "success");
+
+    /* save login state */
     localStorage.setItem("loggedIn", "true");
-    await new Promise((r) => setTimeout(r, 900));
+
+    /* save user details */
+    localStorage.setItem(
+      "userData",
+      JSON.stringify({
+        name: data.name,
+        email: form.email,
+        phone: form.phone,
+      }),
+    );
+
+    /* save token (important later) */
+    localStorage.setItem("token", data.token);
+
     router.push("/checkout");
   };
 

@@ -410,71 +410,49 @@ export default function OrderDetailPage() {
 
   const fetchOrderDetails = async () => {
     try {
-      // Mock data - Replace with actual API
-      const mockOrder = {
-        id: orderId || "LVO-ABC123",
-        status: "shipped",
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API}/orders/order-details/${orderId}`,
+      );
+
+      const data = await res.json();
+      const order = data.data;
+
+      const formatted = {
+        id: order._id,
+        status: order.orderStatus,
         statusIcon: "📦",
-        statusDesc: "Your order is on its way!",
-        date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
-        items: [
-          {
-            id: 1,
-            title: "Wireless Headphones",
-            qty: 1,
-            price: 2999,
-            image: "🎧",
-          },
-          {
-            id: 2,
-            title: "Phone Case",
-            qty: 2,
-            price: 599,
-            image: "📱",
-          },
-        ],
-        subtotal: 4197,
+        statusDesc: "Your order is being processed",
+        date: new Date(order.createdAt),
+
+        items: order.products.map((p, i) => ({
+          id: i,
+          title: p.title,
+          qty: p.quantity,
+          price: p.price,
+          image: "📦",
+        })),
+
+        subtotal: order.totalAmount,
         delivery: 0,
-        total: 4197,
-        timeline: [
-          {
-            title: "Order Confirmed",
-            time: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
-            completed: true,
-          },
-          {
-            title: "Processing",
-            time: new Date(Date.now() - 1.5 * 24 * 60 * 60 * 1000),
-            completed: true,
-          },
-          {
-            title: "Dispatched",
-            time: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
-            completed: true,
-          },
-          {
-            title: "Out for Delivery",
-            time: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000),
-            completed: false,
-          },
-          {
-            title: "Delivered",
-            time: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
-            completed: false,
-          },
-        ],
+        total: order.totalAmount,
+
         address: {
-          name: "John Doe",
-          phone: "9876543210",
-          address: "123 Main Street, Apt 4B",
-          city: "Bangalore",
-          state: "Karnataka",
-          pincode: "560001",
+          name: order.shippingAddress.fullName,
+          phone: order.shippingAddress.phone,
+          address: order.shippingAddress.addressLine,
+          city: order.shippingAddress.city,
+          state: order.shippingAddress.state,
+          pincode: order.shippingAddress.postalCode,
         },
+
+        timeline: order.statusTimeline.map((t) => ({
+          title: t.status,
+          time: new Date(t.date),
+          completed: true,
+        })),
       };
 
-      await new Promise((resolve) => setTimeout(resolve, 600));
-      setOrder(mockOrder);
+      setOrder(formatted);
       setLoading(false);
     } catch (err) {
       setLoading(false);

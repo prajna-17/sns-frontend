@@ -354,6 +354,9 @@ const STATES = [
   "Puducherry",
 ];
 
+const user = JSON.parse(localStorage.getItem("userData"));
+const userEmail = user?.email;
+
 let _tid = 0;
 function useToasts() {
   const [toasts, setToasts] = useState([]);
@@ -802,7 +805,21 @@ export default function CheckoutPage() {
         <AddressDrawer
           initial={address}
           onSave={(addr) => {
+            const user = JSON.parse(localStorage.getItem("userData"));
+            const email = user?.email;
+
+            if (!email) return;
+
+            const key = `addresses_${email}`;
+
+            const existing = JSON.parse(localStorage.getItem(key)) || [];
+
+            const updated = [...existing, { ...addr, id: Date.now() }];
+
+            localStorage.setItem(key, JSON.stringify(updated));
+
             setAddress(addr);
+
             show("Address saved! 📍", "s");
           }}
           onClose={() => setDrawer(false)}

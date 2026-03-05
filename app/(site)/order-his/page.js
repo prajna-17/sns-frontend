@@ -365,53 +365,34 @@ export default function OrderHistoryPage() {
   const fetchOrders = async () => {
     try {
       setLoading(true);
-      // Mock API - Replace with your actual API endpoint
-      const mockOrders = [
-        {
-          id: "LVO-ABC123",
-          date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
-          status: "delivered",
-          items: 3,
-          amount: 5999,
-          itemNames: "Laptop, Mouse, Keyboard",
-        },
-        {
-          id: "LVO-DEF456",
-          date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
-          status: "shipped",
-          items: 2,
-          amount: 2499,
-          itemNames: "Phone Case, Screen Protector",
-        },
-        {
-          id: "LVO-GHI789",
-          date: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
-          status: "processing",
-          items: 1,
-          amount: 1299,
-          itemNames: "USB-C Cable",
-        },
-        {
-          id: "LVO-JKL012",
-          date: new Date(),
-          status: "confirmed",
-          items: 4,
-          amount: 8999,
-          itemNames: "Monitor, Desk Lamp, & 2 more",
-        },
-      ];
 
-      // Simulate API delay
-      await new Promise((resolve) => setTimeout(resolve, 800));
-      setOrders(mockOrders);
-      setFilteredOrders(mockOrders);
-      setLoading(false);
+      const user = JSON.parse(localStorage.getItem("userData"));
+
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API}/orders/${user._id}`,
+      );
+
+      const data = await res.json();
+
+      const orders = data.data || [];
+
+      const formatted = orders.map((order) => ({
+        id: order._id,
+        date: new Date(order.createdAt),
+        status: order.orderStatus.toLowerCase(),
+        items: order.products.length,
+        amount: order.totalAmount,
+        itemNames: order.products.map((p) => p.title).join(", "),
+      }));
+
+      setOrders(formatted);
+      setFilteredOrders(formatted);
     } catch (err) {
       setError("Failed to load orders");
+    } finally {
       setLoading(false);
     }
   };
-
   const handleSearch = (term) => {
     setSearchTerm(term);
     if (!term.trim()) {

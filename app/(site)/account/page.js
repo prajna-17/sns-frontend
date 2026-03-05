@@ -482,6 +482,9 @@ export default function AccountPage() {
     address: "",
   });
 
+  const user = JSON.parse(localStorage.getItem("userData"));
+  const userEmail = user?.email;
+
   const STATES = [
     "Andhra Pradesh",
     "Arunachal Pradesh",
@@ -534,8 +537,11 @@ export default function AccountPage() {
     });
 
     // Load addresses
+    const user = JSON.parse(localStorage.getItem("userData"));
+    const email = user?.email;
+
     const savedAddresses =
-      JSON.parse(localStorage.getItem("userAddresses")) || [];
+      JSON.parse(localStorage.getItem(`addresses_${email}`)) || [];
     setAddresses(savedAddresses);
   }, []);
 
@@ -594,7 +600,10 @@ export default function AccountPage() {
 
     const newAddresses = [...addresses, { ...addressForm, id: Date.now() }];
     setAddresses(newAddresses);
-    localStorage.setItem("userAddresses", JSON.stringify(newAddresses));
+    const user = JSON.parse(localStorage.getItem("userData"));
+    const email = user?.email;
+
+    localStorage.setItem(`addresses_${email}`, JSON.stringify(newAddresses));
     setAddressForm({
       name: "",
       phone: "",
@@ -611,13 +620,20 @@ export default function AccountPage() {
   const handleDeleteAddress = (id) => {
     const newAddresses = addresses.filter((addr) => addr.id !== id);
     setAddresses(newAddresses);
-    localStorage.setItem("userAddresses", JSON.stringify(newAddresses));
+    const user = JSON.parse(localStorage.getItem("userData"));
+    const email = user?.email;
+
+    localStorage.setItem(`addresses_${email}`, JSON.stringify(newAddresses));
     showToast("✓ Address removed!");
   };
 
   const handleLogout = () => {
     localStorage.removeItem("loggedIn");
     localStorage.removeItem("userData");
+    localStorage.removeItem("token");
+    localStorage.removeItem("cart");
+    localStorage.removeItem("selectedAddress");
+
     router.push("/login");
   };
 
