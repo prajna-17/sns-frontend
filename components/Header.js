@@ -15,7 +15,7 @@ import {
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import InstallButton from "./InstallButton";
-
+import { getCart } from "@/utils/cart";
 export default function Header() {
   const router = useRouter();
   const [showCategories, setShowCategories] = useState(false);
@@ -24,25 +24,18 @@ export default function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    const getCartKey = () => {
-      const userId = localStorage.getItem("userId");
-      return userId ? `cart_${userId}` : "cart_guest";
-    };
+    // const getCartKey = () => {
+    //   const userId = localStorage.getItem("userId");
+    //   return userId ? `cart_${userId}` : "cart_guest";
+    // };
 
     const loadCart = () => {
-      const cartKey = getCartKey();
-      const cartData = localStorage.getItem(cartKey);
+      const cart = getCart();
 
-      const cart = cartData ? JSON.parse(cartData) : [];
-
-      const totalItems = cart.reduce(
-        (sum, item) => sum + (item.quantity || 1),
-        0,
-      );
+      const totalItems = cart.reduce((sum, item) => sum + (item.qty || 1), 0);
 
       setCartCount(totalItems);
     };
-
     const checkLogin = () => {
       setIsLoggedIn(!!localStorage.getItem("loggedIn"));
     };
