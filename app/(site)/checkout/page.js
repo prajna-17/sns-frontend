@@ -653,9 +653,21 @@ export default function CheckoutPage() {
     setLoading(true);
     show("Placing your order…", "i");
     await new Promise((r) => setTimeout(r, 1800));
+
+    const userId = localStorage.getItem("userId");
+    const cartKey = userId ? `cart_${userId}` : "cart_guest";
+
+    // clear cart
+    localStorage.setItem(cartKey, JSON.stringify([]));
+
+    // notify header
+    window.dispatchEvent(new Event("cart-updated"));
+
     setLoading(false);
+
     const id =
       "LVO-" + Math.random().toString(36).substring(2, 8).toUpperCase();
+
     router.push(`/order-confirm?id=${id}`);
   };
 
