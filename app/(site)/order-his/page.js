@@ -11,7 +11,7 @@ import {
   Search,
 } from "lucide-react";
 import Link from "next/link";
-
+import { API } from "@/utils/api";
 const STYLES = `
   .ordhis-root {
     min-height: 100vh;
@@ -370,23 +370,19 @@ export default function OrderHistoryPage() {
 
       const token = localStorage.getItem("lebah-token");
 
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API}/orders/${user._id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+      const res = await fetch(`${API}/orders/${user._id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
-      );
+      });
 
       const data = await res.json();
 
-      const orders = data.data || [];
-
+      const orders = data?.data?.data || [];
       const formatted = orders.map((order) => ({
         id: order._id,
         date: new Date(order.createdAt),
-        status: order.orderStatus.toLowerCase(),
+        status: order.orderStatus?.toLowerCase() || "placed",
         items: order.products.length,
         amount: order.totalAmount,
         itemNames: order.products.map((p) => p.title).join(", "),
