@@ -376,9 +376,11 @@ export default function OrderHistoryPage() {
         },
       });
 
+      console.log("Orders API response:", data);
+
       const data = await res.json();
 
-      const orders = data?.data?.data || [];
+      const orders = data?.data || [];
       const formatted = orders.map((order) => ({
         id: order._id,
         date: new Date(order.createdAt),

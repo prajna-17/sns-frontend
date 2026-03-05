@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import "./details.css";
 import { addToCart } from "@/utils/cart";
 export default function StickyActionBar({ product }) {
+  const router = useRouter();
   const [cartState, setCartState] = useState("idle"); // idle | adding | added
   const [buyState, setBuyState] = useState("idle"); // idle | loading | done
   const [particles, setParticles] = useState([]);
@@ -45,11 +47,34 @@ export default function StickyActionBar({ product }) {
   // ── Buy Now animation ──
   const handleBuyNow = () => {
     if (buyState !== "idle") return;
+
+    const loggedIn = localStorage.getItem("loggedIn");
+
+    // product object for cart
+    const item = {
+      productId: product._id,
+      id: product._id,
+      title: product.title,
+      price: product.price,
+      oldPrice: product.oldPrice,
+      images: product.images,
+      image: product.images?.[0],
+      color: product.selectedColor || "Default",
+      size: product.selectedSize || "Free",
+    };
+
+    // add item to cart
+    addToCart(item);
+
     setBuyState("loading");
+
     setTimeout(() => {
-      setBuyState("done");
-      setTimeout(() => setBuyState("idle"), 2000);
-    }, 800);
+      if (!loggedIn) {
+        router.push("/login?redirect=/checkout");
+      } else {
+        router.push("/checkout");
+      }
+    }, 600);
   };
 
   return (

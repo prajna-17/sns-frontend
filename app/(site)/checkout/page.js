@@ -1,9 +1,10 @@
 "use client";
 
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { clearCart } from "@/store/cartSlice";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
-
+import { API } from "@/utils/api";
 const STYLES = `
 
   .ck2-root {
@@ -614,6 +615,7 @@ function PlaceBtn({ onClick, loading, disabled }) {
 /* ── MAIN PAGE ── */
 export default function CheckoutPage() {
   const cartItems = useSelector((state) => state.cart.items);
+  const dispatch = useDispatch();
   const router = useRouter();
   const { toasts, show } = useToasts();
 
@@ -652,23 +654,54 @@ export default function CheckoutPage() {
     }
     setLoading(true);
     show("Placing your order…", "i");
-    await new Promise((r) => setTimeout(r, 1800));
+    const token = localStorage.getItem("lebah-token");
 
+    const products = cartItems.map((item) => ({
+      product: item.productId,
+      quantity: item.qty,
+    }));
+
+    const res = await fetch(`${API}/orders/create-cod`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        products,
+        shippingAddress: {
+          fullName: address.name,
+          phone: address.phone,
+          addressLine: address.address,
+          city: address.city,
+          state: address.state,
+          postalCode: address.pincode,
+        },
+      }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      show("Failed to place order ❌", "e");
+      setLoading(false);
+      return;
+    }
     const userId = localStorage.getItem("userId");
     const cartKey = userId ? `cart_${userId}` : "cart_guest";
 
     // clear cart
+    // clear cart
     localStorage.setItem(cartKey, JSON.stringify([]));
+
+    // clear redux cart
+    dispatch(clearCart());
 
     // notify header
     window.dispatchEvent(new Event("cart-updated"));
-
     setLoading(false);
 
-    const id =
-      "LVO-" + Math.random().toString(36).substring(2, 8).toUpperCase();
-
-    router.push(`/order-confirm?id=${id}`);
+    router.push(`/order-confirm?id=${data.data.orderId}`);
   };
 
   return (
