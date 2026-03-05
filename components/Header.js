@@ -30,7 +30,11 @@ export default function Header() {
     };
 
     const loadCart = () => {
-      const cart = JSON.parse(localStorage.getItem(getCartKey())) || [];
+      const cartKey = getCartKey();
+      const cartData = localStorage.getItem(cartKey);
+
+      const cart = cartData ? JSON.parse(cartData) : [];
+
       setCartCount(cart.length);
     };
 
