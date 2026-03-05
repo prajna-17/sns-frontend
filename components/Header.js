@@ -92,11 +92,11 @@ export default function Header() {
           </div>
 
           <div className="flex items-center gap-6">
-            <button
-              onClick={() => router.push(isLoggedIn ? "/account" : "/login")}
-            >
-              <User size={26} strokeWidth={2.5} className="text-white" />
-            </button>
+            {isLoggedIn && (
+              <button onClick={() => router.push("/account")}>
+                <User size={26} strokeWidth={2.5} className="text-white" />
+              </button>
+            )}
 
             <Link href="/cart" className="relative">
               <ShoppingCart

@@ -462,6 +462,7 @@ export default function AccountPage() {
   const [toast, setToast] = useState("");
   const [loading, setLoading] = useState(false);
   const [userEmail, setUserEmail] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -528,6 +529,10 @@ export default function AccountPage() {
     }
 
     const userData = JSON.parse(localStorage.getItem("userData")) || {};
+
+    if (userData.role === "ADMIN") {
+      setIsAdmin(true);
+    }
     setFormData({
       name: userData.name || "",
       email: userData.email || "",
@@ -709,6 +714,16 @@ export default function AccountPage() {
                   >
                     <Edit2 size={16} /> Edit Profile
                   </button>
+
+                  {isAdmin && (
+                    <button
+                      className="acc-btn acc-btn-secondary"
+                      onClick={() => router.push("/admin")}
+                    >
+                      Admin Panel
+                    </button>
+                  )}
+
                   <button
                     className="acc-btn acc-btn-danger"
                     onClick={handleLogout}
