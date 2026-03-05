@@ -461,7 +461,7 @@ export default function AccountPage() {
   const [showAddressModal, setShowAddressModal] = useState(false);
   const [toast, setToast] = useState("");
   const [loading, setLoading] = useState(false);
-
+  const [userEmail, setUserEmail] = useState(null);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -481,9 +481,6 @@ export default function AccountPage() {
     state: "",
     address: "",
   });
-
-  const user = JSON.parse(localStorage.getItem("userData"));
-  const userEmail = user?.email;
 
   const STATES = [
     "Andhra Pradesh",
@@ -522,12 +519,14 @@ export default function AccountPage() {
 
   useEffect(() => {
     setMounted(true);
+
+    if (typeof window === "undefined") return;
+
     if (!localStorage.getItem("loggedIn")) {
       router.push("/login");
       return;
     }
 
-    // Load user data from localStorage
     const userData = JSON.parse(localStorage.getItem("userData")) || {};
     setFormData({
       name: userData.name || "",
@@ -536,15 +535,12 @@ export default function AccountPage() {
       password: userData.password || "",
     });
 
-    // Load addresses
-    const user = JSON.parse(localStorage.getItem("userData"));
-    const email = user?.email;
+    setUserEmail(userData.email);
 
     const savedAddresses =
-      JSON.parse(localStorage.getItem(`addresses_${email}`)) || [];
+      JSON.parse(localStorage.getItem(`addresses_${userData.email}`)) || [];
     setAddresses(savedAddresses);
   }, []);
-
   if (!mounted) return null;
 
   const showToast = (msg) => {
