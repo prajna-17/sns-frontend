@@ -368,8 +368,15 @@ export default function OrderHistoryPage() {
 
       const user = JSON.parse(localStorage.getItem("userData"));
 
+      const token = localStorage.getItem("lebah-token");
+
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API}/orders/${user._id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
       );
 
       const data = await res.json();
