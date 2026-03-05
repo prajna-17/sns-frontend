@@ -654,7 +654,7 @@ export default function CheckoutPage() {
     }
     setLoading(true);
     show("Placing your order…", "i");
-    const token = localStorage.getItem("lebah-token");
+    const token = localStorage.getItem("token");
 
     const products = cartItems.map((item) => ({
       product: item.productId,
