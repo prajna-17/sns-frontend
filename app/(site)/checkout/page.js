@@ -1,7 +1,7 @@
 "use client";
 
 import { useSelector, useDispatch } from "react-redux";
-import { clearCart } from "@/store/cartSlice";
+import { clearCart } from "@/_store/cartSlice";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
 import { API } from "@/utils/api";
