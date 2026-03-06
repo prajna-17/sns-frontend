@@ -744,14 +744,14 @@ export default function ProductsClient() {
             className="pp-filter-btn"
             onClick={() => updateParam("sort", "low")}
           >
-            Price: Low → High
+            Low → High
           </button>
 
           <button
             className="pp-filter-btn"
             onClick={() => updateParam("sort", "high")}
           >
-            Price: High → Low
+            High → Low
           </button>
 
           <button
