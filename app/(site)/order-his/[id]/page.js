@@ -466,7 +466,47 @@ export default function OrderDetailPage() {
       setLoading(false);
     }
   };
+  const downloadInvoice = () => {
+    const invoice = `
+INVOICE
+----------------------------------------
 
+Order ID: ${order.id}
+Date: ${formatDate(order.date)}
+
+Customer:
+${order.address.name}
+${order.address.address}
+${order.address.city}, ${order.address.state} - ${order.address.pincode}
+
+----------------------------------------
+Items:
+${order.items
+  .map(
+    (i) =>
+      `${i.title}  x${i.qty}  - ₹${(i.price * i.qty).toLocaleString("en-IN")}`,
+  )
+  .join("\n")}
+
+----------------------------------------
+Subtotal: ₹${order.subtotal}
+Delivery: FREE
+Total: ₹${order.total}
+
+----------------------------------------
+Thank you for shopping with us!
+`;
+
+    const blob = new Blob([invoice], { type: "application/pdf" });
+    const url = window.URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `invoice_${order.id}.pdf`;
+    a.click();
+
+    window.URL.revokeObjectURL(url);
+  };
   if (!mounted || loading) {
     return (
       <div className="orddetail-root">
@@ -638,10 +678,13 @@ export default function OrderDetailPage() {
 
           {/* Action Buttons */}
           <div className="orddetail-actions">
-            <button className="orddetail-action-btn">
+            <button className="orddetail-action-btn" onClick={downloadInvoice}>
               <Download size={14} /> Invoice
             </button>
-            <button className="orddetail-action-btn">
+            <button
+              className="orddetail-action-btn"
+              onClick={() => router.push("/help-support")}
+            >
               <MessageCircle size={14} /> Support
             </button>
           </div>
