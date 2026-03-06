@@ -368,7 +368,7 @@ export default function OrderHistoryPage() {
 
       const user = JSON.parse(localStorage.getItem("userData"));
 
-      const token = localStorage.getItem("lebah-token");
+      const token = localStorage.getItem("token");
 
       const res = await fetch(`${API}/orders/${user._id}`, {
         headers: {
@@ -376,9 +376,9 @@ export default function OrderHistoryPage() {
         },
       });
 
-      console.log("Orders API response:", data);
-
       const data = await res.json();
+
+      console.log("Orders API response:", data);
 
       const orders = data?.data || [];
       const formatted = orders.map((order) => ({
