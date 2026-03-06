@@ -778,8 +778,10 @@ export default function OrderConfirmPage() {
 
   if (!mounted) return null;
 
-  const subtotal = cartItems.reduce((a, i) => a + i.price * i.qty, 0);
-
+  const subtotal = cartItems.reduce(
+    (a, i) => a + i.price * (i.qty || i.quantity || 1),
+    0,
+  );
   const copyOrderId = () => {
     navigator.clipboard.writeText(orderId);
     setCopied(true);
