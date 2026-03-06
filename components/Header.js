@@ -53,7 +53,7 @@ export default function Header() {
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem("lebah-token");
+    localStorage.removeItem("token");
     localStorage.removeItem("userData");
     localStorage.removeItem("userAddresses");
 
@@ -67,7 +67,7 @@ export default function Header() {
 
     window.dispatchEvent(new Event("login-updated"));
 
-    router.push("/login");
+    router.push("/");
   };
 
   return (

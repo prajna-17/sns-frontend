@@ -948,7 +948,7 @@ export default function OrderConfirmPage() {
           </div>
 
           {/* Delivery Address */}
-          <div className="oc-card">
+          {/* <div className="oc-card">
             <div className="oc-section-title">Delivery Address</div>
             <div className="oc-address-card">
               <p className="oc-address-label">📍 Delivery To</p>
@@ -963,7 +963,7 @@ export default function OrderConfirmPage() {
                 {cartItems[0]?.address?.pincode || "Pincode"}
               </p>
             </div>
-          </div>
+          </div> */}
 
           {/* Action Buttons */}
           <div className="oc-button-group">
