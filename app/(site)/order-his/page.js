@@ -366,11 +366,10 @@ export default function OrderHistoryPage() {
     try {
       setLoading(true);
 
-      const user = JSON.parse(localStorage.getItem("userData"));
-
       const token = localStorage.getItem("token");
+      const userId = localStorage.getItem("userId");
 
-      const res = await fetch(`${API}/orders/${user._id}`, {
+      const res = await fetch(`${API}/orders/${userId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

@@ -199,14 +199,19 @@ export default function LoginPage() {
     localStorage.setItem("loggedIn", "true");
 
     /* save user details */
+    /* save user details */
     localStorage.setItem(
       "userData",
       JSON.stringify({
-        name: data.name,
-        email: form.email,
-        phone: form.phone,
+        _id: data.user._id,
+        name: data.user.name,
+        email: data.user.email,
+        phone: data.user.phone,
       }),
     );
+
+    /* save userId separately */
+    localStorage.setItem("userId", data.user._id);
 
     /* save token (important later) */
     localStorage.setItem("token", data.token);
