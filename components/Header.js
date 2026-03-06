@@ -237,6 +237,15 @@ export default function Header() {
               >
                 Logout
               </button>
+              <button
+                onClick={() => {
+                  router.push("/login?admin=true");
+                  setSidebarOpen(false);
+                }}
+                className="px-4 py-3 hover:bg-gray-800 cursor-pointer block transition text-orange-400 text-left w-full"
+              >
+                Admin Login
+              </button>
             </>
           ) : (
             <>

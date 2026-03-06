@@ -216,7 +216,11 @@ export default function LoginPage() {
     /* save token (important later) */
     localStorage.setItem("token", data.token);
 
-    router.push("/checkout");
+    if (data.user.role === "ADMIN") {
+      router.push("/admin");
+    } else {
+      router.push("/checkout");
+    }
   };
 
   return (

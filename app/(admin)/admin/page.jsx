@@ -12,12 +12,22 @@ export default function AdminHome() {
   const [totalProducts, setTotalProducts] = useState(0);
 
   useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("userData"));
+
+    if (!user || user.role !== "ADMIN") {
+      router.push("/");
+      return;
+    }
+
     fetchCounts();
   }, []);
-
   const fetchCounts = async () => {
     try {
       const token = localStorage.getItem("token");
+      if (!token) {
+        router.push("/login");
+        return;
+      }
 
       const [catRes, prodRes, orderRes] = await Promise.all([
         fetch(`${API}/categories`).then((r) => r.json()),
