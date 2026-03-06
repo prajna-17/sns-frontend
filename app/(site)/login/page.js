@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import "./login.css";
 
 let toastId = 0;
@@ -120,8 +120,10 @@ export default function LoginPage() {
   const [form, setForm] = useState({ name: "", phone: "", email: "" });
   const { toasts, show } = useToasts();
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const redirect = searchParams.get("redirect") || "/";
+  const redirect =
+    typeof window !== "undefined"
+      ? new URLSearchParams(window.location.search).get("redirect") || "/"
+      : "/";
   const handleSendOtp = async () => {
     if (!form.name.trim()) {
       show("Please enter your name 👤", "error");
