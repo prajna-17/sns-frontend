@@ -593,16 +593,27 @@ export default function ProductsClient() {
   const maxPriceFilter = Number(searchParams.get("price")) || 0;
   const categoryFilter = searchParams.get("category") || "";
   const superCategoryFilter = searchParams.get("superCategory") || "";
+  const searchQuery = searchParams.get("search") || "";
 
   const filteredItems = useMemo(() => {
     return products.filter((p) => {
-      if (ratingFilter && p.rating < ratingFilter) return false;
-      if (discountFilter && p.off < discountFilter) return false;
+      if (searchQuery) {
+        const q = searchQuery.toLowerCase();
+        if (!p.title?.toLowerCase().includes(q)) return false;
+      }
+
+      const rating = Number(getRating(p._id));
+      if (ratingFilter && rating < ratingFilter) return false;
+      const discount = p.oldPrice
+        ? ((p.oldPrice - p.price) / p.oldPrice) * 100
+        : 0;
+
+      if (discountFilter && discount < discountFilter) return false;
       if (maxPriceFilter && p.price > maxPriceFilter) return false;
+
       return true;
     });
-  }, [products, ratingFilter, discountFilter, maxPriceFilter]);
-
+  }, [products, ratingFilter, discountFilter, maxPriceFilter, searchQuery]);
   const totalPages = Math.ceil(filteredItems.length / perPage);
   const paginatedItems = filteredItems.slice(
     (page - 1) * perPage,
@@ -714,7 +725,9 @@ export default function ProductsClient() {
           <p className="pp-hero-sub">
             {loading
               ? "Loading products…"
-              : `${filteredItems.length} products waiting for you`}
+              : searchQuery
+                ? `${filteredItems.length} results for "${searchQuery}"`
+                : `${filteredItems.length} products waiting for you`}
           </p>
         </div>
 

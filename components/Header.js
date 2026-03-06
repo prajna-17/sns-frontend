@@ -22,7 +22,7 @@ export default function Header() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [cartCount, setCartCount] = useState(0);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-
+  const [search, setSearch] = useState("");
   useEffect(() => {
     // const getCartKey = () => {
     //   const userId = localStorage.getItem("userId");
@@ -133,10 +133,25 @@ export default function Header() {
             <input
               type="text"
               placeholder="Search Items..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && search.trim()) {
+                  router.push(`/products?search=${encodeURIComponent(search)}`);
+                }
+              }}
               className="flex-1 px-5 py-4 text-base bg-transparent text-gray-600 placeholder-gray-500 outline-none"
             />
 
-            <div className="absolute left-70 text-gray-600">
+            <div
+              className="absolute left-70 text-gray-600 cursor-pointer"
+              onClick={() => {
+                if (search.trim()) {
+                  router.push(`/products?search=${encodeURIComponent(search)}`);
+                }
+              }}
+            >
+              {" "}
               <Search size={24} strokeWidth={2.5} />
             </div>
           </div>
