@@ -292,12 +292,32 @@ function UserMenu() {
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem("loggedIn");
+    const userId = localStorage.getItem("userId");
+
+    // remove auth
+    localStorage.removeItem("lebah-token");
     localStorage.removeItem("userData");
     localStorage.removeItem("userAddresses");
+    localStorage.removeItem("loggedIn");
+
+    // clear cart
+    if (userId) {
+      localStorage.removeItem(`cart_${userId}`);
+    }
+    localStorage.removeItem("cart_guest");
+
+    // update UI instantly
+    setCartCount(0);
     setIsLoggedIn(false);
-    setOpen(false);
-    router.push("/login");
+
+    // notify header listeners
+    window.dispatchEvent(new Event("cart-updated"));
+    window.dispatchEvent(new Event("login-updated"));
+
+    setSidebarOpen(false);
+
+    // go to HOME
+    router.push("/");
   };
 
   return (
