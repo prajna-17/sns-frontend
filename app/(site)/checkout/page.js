@@ -698,14 +698,10 @@ export default function CheckoutPage() {
 
     // clear cart
     // clear cart
-    localStorage.setItem(cartKey, JSON.stringify([]));
+    localStorage.setItem("lastOrderItems", JSON.stringify(cartItems));
 
-    // clear redux cart
     dispatch(clearCart());
-
-    // notify header
     window.dispatchEvent(new Event("cart-updated"));
-    setLoading(false);
 
     router.push(`/order-confirm?id=${data.data.orderId}`);
   };

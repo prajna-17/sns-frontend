@@ -746,8 +746,17 @@ function triggerVibration() {
 
 export default function OrderConfirmPage() {
   const router = useRouter();
-  const cartItems = useSelector((state) => state.cart.items);
+  const reduxCart = useSelector((state) => state.cart.items);
+  const [cartItems, setCartItems] = useState([]);
 
+  useEffect(() => {
+    if (reduxCart.length) {
+      setCartItems(reduxCart);
+    } else {
+      const saved = JSON.parse(localStorage.getItem("lastOrderItems")) || [];
+      setCartItems(saved);
+    }
+  }, [reduxCart]);
   const [mounted, setMounted] = useState(false);
   const [orderId, setOrderId] = useState("");
   const [copied, setCopied] = useState(false);
