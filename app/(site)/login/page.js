@@ -206,7 +206,7 @@ export default function LoginPage() {
         _id: data.user._id,
         name: data.user.name,
         email: data.user.email,
-        phone: data.user.phone,
+        role: data.user.role,
       }),
     );
 
