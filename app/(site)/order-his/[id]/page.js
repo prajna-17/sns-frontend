@@ -14,7 +14,7 @@ import {
   CheckCircle2,
   Clock,
 } from "lucide-react";
-
+import { API } from "@/utils/api";
 const STYLES = `
   .orddetail-root {
     min-height: 100vh;
@@ -410,13 +410,21 @@ export default function OrderDetailPage() {
 
   const fetchOrderDetails = async () => {
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API}/orders/order-details/${orderId}`,
-      );
+      const token = localStorage.getItem("token");
 
+      const res = await fetch(`${API}/orders/order-details/${orderId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       const data = await res.json();
-      const order = data.data;
+      const order = data?.data;
 
+      if (!order) {
+        setOrder(null);
+        setLoading(false);
+        return;
+      }
       const formatted = {
         id: order._id,
         status: order.orderStatus,
