@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import "./login.css";
 
@@ -120,10 +120,14 @@ export default function LoginPage() {
   const [form, setForm] = useState({ name: "", phone: "", email: "" });
   const { toasts, show } = useToasts();
   const router = useRouter();
-  const redirect =
-    typeof window !== "undefined"
-      ? new URLSearchParams(window.location.search).get("redirect") || "/"
-      : "/";
+
+  const [redirect, setRedirect] = useState("/");
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const r = params.get("redirect");
+    if (r) setRedirect(r);
+  }, []);
   const handleSendOtp = async () => {
     if (!form.name.trim()) {
       show("Please enter your name 👤", "error");
@@ -223,11 +227,7 @@ export default function LoginPage() {
     window.dispatchEvent(new Event("login-updated"));
     window.dispatchEvent(new Event("cart-updated"));
 
-    if (data.user.role === "ADMIN") {
-      router.push(redirect);
-    } else {
-      router.push(redirect);
-    }
+    router.push(redirect);
   };
 
   return (
