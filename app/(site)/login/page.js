@@ -312,8 +312,8 @@ export default function LoginPage() {
                 </div>
                 <h2 className="lp-title">Enter your OTP </h2>
                 <p className="lp-sub">
-                  We sent a 6-digit code to{" "}
-                  <strong style={{ color: "#f0f0f5" }}>+{form.phone}</strong>
+                  We sent a 6-digit code{" "}
+                  {/* <strong style={{ color: "#f0f0f5" }}>+{form.phone}</strong> */}
                 </p>
               </div>
 
