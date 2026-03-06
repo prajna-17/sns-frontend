@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { API } from "@/utils/api";
 import "@/components/admin/modal.css";
-
+import jsPDF from "jspdf";
 export default function AdminOrderDetails() {
   const { orderId } = useParams();
   const router = useRouter();
@@ -13,17 +13,31 @@ export default function AdminOrderDetails() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    loadOrder();
-  }, []);
+    const user = JSON.parse(localStorage.getItem("userData"));
+
+    if (!user || user.role !== "ADMIN") {
+      router.push("/");
+      return;
+    }
+
+    if (orderId) {
+      loadOrder();
+    }
+  }, [orderId]);
 
   const loadOrder = async () => {
     try {
       const res = await fetch(`${API}/orders/order-details/${orderId}`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("lebah-token")}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
       const data = await res.json();
+      if (!data || !data.data) {
+        setOrder(null);
+        return;
+      }
+
       setOrder(data.data);
     } catch (err) {
       console.error("Failed to load order", err);
@@ -37,7 +51,7 @@ export default function AdminOrderDetails() {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("lebah-token")}`,
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
       body: JSON.stringify({ orderStatus: status }),
     });
@@ -61,7 +75,7 @@ export default function AdminOrderDetails() {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("lebah-token")}`,
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
       body: JSON.stringify({
         orderStatus: "CANCELLED",
@@ -84,7 +98,39 @@ export default function AdminOrderDetails() {
   };
 
   const downloadInvoice = () => {
-    window.open(`${API}/orders/invoice/${order._id}`, "_blank");
+    const doc = new jsPDF();
+
+    doc.setFontSize(18);
+    doc.text("Invoice", 20, 20);
+
+    doc.setFontSize(12);
+    doc.text(`Order ID: ${order._id}`, 20, 35);
+    doc.text(`Date: ${new Date(order.createdAt).toLocaleString()}`, 20, 45);
+
+    doc.text("Customer:", 20, 60);
+    doc.text(order.shippingAddress.fullName, 20, 70);
+    doc.text(order.shippingAddress.addressLine, 20, 80);
+    doc.text(
+      `${order.shippingAddress.city}, ${order.shippingAddress.state}`,
+      20,
+      90,
+    );
+    doc.text(order.shippingAddress.postalCode, 20, 100);
+
+    let y = 120;
+
+    doc.text("Items:", 20, y);
+    y += 10;
+
+    order.products.forEach((p) => {
+      doc.text(`${p.title} x${p.quantity} - ₹${p.subtotal}`, 20, y);
+      y += 10;
+    });
+
+    y += 10;
+    doc.text(`Total: ₹${order.totalAmount}`, 20, y);
+
+    doc.save(`invoice_${order._id}.pdf`);
   };
   if (loading) return <div style={{ padding: 30 }}>Loading...</div>;
   if (!order) return <div style={{ padding: 30 }}>Order not found</div>;
