@@ -49,7 +49,7 @@ export default function AdminCreateProduct() {
   useEffect(() => {
     fetch(`${API}/super-categories`)
       .then((r) => r.json())
-      .then(setSuperCategories);
+      .then((d) => setSuperCategories(Array.isArray(d) ? d : d.data || []));
   }, []);
   useEffect(() => {
     if (!superCategoryId) return;
@@ -57,13 +57,14 @@ export default function AdminCreateProduct() {
     fetch(`${API}/categories?superCategory=${superCategoryId}`)
       .then((r) => r.json())
       .then((d) => setCategories(Array.isArray(d) ? d : d.data || []));
+    console.log("SUPER CATEGORY:", d);
   }, [superCategoryId]);
   useEffect(() => {
     if (!categoryId) return;
 
     fetch(`${API}/sub-categories?category=${categoryId}`)
       .then((r) => r.json())
-      .then(setSubCategories);
+      .then((d) => setSubCategories(Array.isArray(d) ? d : d.data || []));
   }, [categoryId]);
 
   // 🔹 MAIN IMAGES UPLOAD
