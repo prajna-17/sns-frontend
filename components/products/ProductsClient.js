@@ -594,6 +594,13 @@ export default function ProductsClient() {
   const categoryFilter = searchParams.get("category") || "";
   const superCategoryFilter = searchParams.get("superCategory") || "";
   const searchQuery = searchParams.get("search") || "";
+  const ratingCache = useRef({});
+  const getRating = (id) => {
+    if (!ratingCache.current[id]) {
+      ratingCache.current[id] = (Math.random() * (5 - 3.5) + 3.5).toFixed(1);
+    }
+    return ratingCache.current[id];
+  };
 
   const filteredItems = useMemo(() => {
     return products.filter((p) => {
@@ -661,13 +668,6 @@ export default function ProductsClient() {
   }, [categoryFilter, superCategoryFilter]);
 
   // ── rating helpers ──
-  const ratingCache = useRef({});
-  const getRating = (id) => {
-    if (!ratingCache.current[id]) {
-      ratingCache.current[id] = (Math.random() * (5 - 3.5) + 3.5).toFixed(1);
-    }
-    return ratingCache.current[id];
-  };
 
   // ── toast helper ──
   const showToast = (msg) => {
