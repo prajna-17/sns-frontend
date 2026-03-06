@@ -237,6 +237,9 @@ export default function Header() {
               >
                 Logout
               </button>
+            </>
+          ) : (
+            <>
               <button
                 onClick={() => {
                   router.push("/login?admin=true");
@@ -246,24 +249,6 @@ export default function Header() {
               >
                 Admin Login
               </button>
-            </>
-          ) : (
-            <>
-              {/* <Link
-                href="/login"
-                className="px-4 py-3 hover:bg-gray-800 cursor-pointer block transition"
-                onClick={() => setSidebarOpen(false)}
-              >
-                Login
-              </Link> */}
-
-              {/* <Link
-                href="/register"
-                className="px-4 py-3 hover:bg-gray-800 cursor-pointer block transition"
-                onClick={() => setSidebarOpen(false)}
-              >
-                Register
-              </Link> */}
             </>
           )}
         </div>
