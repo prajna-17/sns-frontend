@@ -629,13 +629,26 @@ export default function AccountPage() {
   };
 
   const handleLogout = () => {
+    const userId = localStorage.getItem("userId");
+
+    // remove auth
     localStorage.removeItem("loggedIn");
     localStorage.removeItem("userData");
     localStorage.removeItem("token");
-    localStorage.removeItem("cart");
     localStorage.removeItem("selectedAddress");
 
-    router.push("/login");
+    // clear cart
+    if (userId) {
+      localStorage.removeItem(`cart_${userId}`);
+    }
+    localStorage.removeItem("cart_guest");
+
+    // notify header to update cart + login state
+    window.dispatchEvent(new Event("cart-updated"));
+    window.dispatchEvent(new Event("login-updated"));
+
+    // redirect to HOME
+    router.push("/");
   };
 
   const initials = formData.name
