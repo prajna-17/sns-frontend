@@ -57,7 +57,6 @@ export default function AdminCreateProduct() {
     fetch(`${API}/categories?superCategory=${superCategoryId}`)
       .then((r) => r.json())
       .then((d) => setCategories(Array.isArray(d) ? d : d.data || []));
-    console.log("SUPER CATEGORY:", d);
   }, [superCategoryId]);
   useEffect(() => {
     if (!categoryId) return;
