@@ -53,18 +53,24 @@ export default function Header() {
   }, []);
 
   const handleLogout = () => {
+    const userId = localStorage.getItem("userId");
+
     localStorage.removeItem("token");
     localStorage.removeItem("userData");
     localStorage.removeItem("userAddresses");
+    localStorage.removeItem("loggedIn");
+    localStorage.removeItem("userId");
 
-    const userId = localStorage.getItem("userId");
     if (userId) {
       localStorage.removeItem(`cart_${userId}`);
     }
+    localStorage.removeItem("cart_guest");
 
     setIsLoggedIn(false);
+    setCartCount(0);
     setSidebarOpen(false);
 
+    window.dispatchEvent(new Event("cart-updated"));
     window.dispatchEvent(new Event("login-updated"));
 
     router.push("/");
