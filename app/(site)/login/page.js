@@ -227,7 +227,7 @@ export default function LoginPage() {
     window.dispatchEvent(new Event("login-updated"));
     window.dispatchEvent(new Event("cart-updated"));
 
-    router.push(redirect);
+    router.push("/");
   };
 
   return (
