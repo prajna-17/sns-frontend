@@ -15,6 +15,7 @@ import {
   Clock,
 } from "lucide-react";
 import { API } from "@/utils/api";
+import jsPDF from "jspdf";
 const STYLES = `
   .orddetail-root {
     min-height: 100vh;
@@ -467,45 +468,42 @@ export default function OrderDetailPage() {
     }
   };
   const downloadInvoice = () => {
-    const invoice = `
-INVOICE
-----------------------------------------
+    const doc = new jsPDF();
 
-Order ID: ${order.id}
-Date: ${formatDate(order.date)}
+    doc.setFontSize(18);
+    doc.text("Invoice", 20, 20);
 
-Customer:
-${order.address.name}
-${order.address.address}
-${order.address.city}, ${order.address.state} - ${order.address.pincode}
+    doc.setFontSize(12);
+    doc.text(`Order ID: ${order.id}`, 20, 35);
+    doc.text(`Date: ${formatDate(order.date)}`, 20, 45);
 
-----------------------------------------
-Items:
-${order.items
-  .map(
-    (i) =>
-      `${i.title}  x${i.qty}  - ₹${(i.price * i.qty).toLocaleString("en-IN")}`,
-  )
-  .join("\n")}
+    doc.text("Customer:", 20, 60);
+    doc.text(order.address.name, 20, 70);
+    doc.text(`${order.address.address}, ${order.address.city}`, 20, 80);
+    doc.text(`${order.address.state} - ${order.address.pincode}`, 20, 90);
 
-----------------------------------------
-Subtotal: ₹${order.subtotal}
-Delivery: FREE
-Total: ₹${order.total}
+    let y = 110;
 
-----------------------------------------
-Thank you for shopping with us!
-`;
+    doc.text("Items:", 20, y);
+    y += 10;
 
-    const blob = new Blob([invoice], { type: "application/pdf" });
-    const url = window.URL.createObjectURL(blob);
+    order.items.forEach((item) => {
+      doc.text(
+        `${item.title}  x${item.qty}  - ₹${item.price * item.qty}`,
+        20,
+        y,
+      );
+      y += 10;
+    });
 
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `invoice_${order.id}.pdf`;
-    a.click();
+    y += 10;
+    doc.text(`Subtotal: ₹${order.subtotal}`, 20, y);
+    y += 10;
+    doc.text(`Delivery: FREE`, 20, y);
+    y += 10;
+    doc.text(`Total: ₹${order.total}`, 20, y);
 
-    window.URL.revokeObjectURL(url);
+    doc.save(`invoice_${order.id}.pdf`);
   };
   if (!mounted || loading) {
     return (
