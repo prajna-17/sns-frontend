@@ -216,6 +216,10 @@ export default function LoginPage() {
     /* save token (important later) */
     localStorage.setItem("token", data.token);
 
+    /* notify header to update login state */
+    window.dispatchEvent(new Event("login-updated"));
+    window.dispatchEvent(new Event("cart-updated"));
+
     if (data.user.role === "ADMIN") {
       router.push("/admin");
     } else {
