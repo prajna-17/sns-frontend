@@ -14,7 +14,15 @@ export default function StickyActionBar({ product }) {
   const handleAddToCart = () => {
     if (cartState !== "idle") return;
 
-    // 🔥 REAL CART FUNCTION
+    const loggedIn = localStorage.getItem("loggedIn");
+
+    // ❌ not logged in → go to login page
+    if (!loggedIn) {
+      router.push(`/login?redirect=/product/${product._id}`);
+      return;
+    }
+
+    // ✅ logged in → add to cart
     addToCart({
       productId: product._id,
       id: product._id,
@@ -50,7 +58,13 @@ export default function StickyActionBar({ product }) {
 
     const loggedIn = localStorage.getItem("loggedIn");
 
-    // product object for cart
+    // ❌ not logged in → go to login
+    if (!loggedIn) {
+      router.push(`/login?redirect=/checkout`);
+      return;
+    }
+
+    // product object
     const item = {
       productId: product._id,
       id: product._id,
@@ -63,17 +77,13 @@ export default function StickyActionBar({ product }) {
       size: product.selectedSize || "Free",
     };
 
-    // add item to cart
+    // add to cart
     addToCart(item);
 
     setBuyState("loading");
 
     setTimeout(() => {
-      if (!loggedIn) {
-        router.push("/login?redirect=/checkout");
-      } else {
-        router.push("/checkout");
-      }
+      router.push("/checkout");
     }, 600);
   };
 

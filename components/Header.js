@@ -209,7 +209,7 @@ export default function Header() {
 
           <div className="border-t border-gray-700 my-2" />
 
-          {isLoggedIn ? (
+          {isLoggedIn && (
             <>
               <Link
                 href="/account"
@@ -242,18 +242,6 @@ export default function Header() {
                 className="px-4 py-3 hover:bg-gray-800 cursor-pointer block transition text-red-400 text-left w-full"
               >
                 Logout
-              </button>
-            </>
-          ) : (
-            <>
-              <button
-                onClick={() => {
-                  router.push("/login?admin=true");
-                  setSidebarOpen(false);
-                }}
-                className="px-4 py-3 hover:bg-gray-800 cursor-pointer block transition text-orange-400 text-left w-full"
-              >
-                Admin Login
               </button>
             </>
           )}
