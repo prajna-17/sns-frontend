@@ -5,46 +5,61 @@ import { useEffect, useState } from "react";
 export default function InstallButton() {
 	const [deferredPrompt, setDeferredPrompt] = useState(null);
 	const [isInstalled, setIsInstalled] = useState(false);
-	const [showHint, setShowHint] = useState(false);
 
 	useEffect(() => {
-		// Detect standalone mode
-		if (window.matchMedia("(display-mode: standalone)").matches) {
+		// Check if already installed
+		const isStandalone =
+			window.matchMedia("(display-mode: standalone)").matches ||
+			window.navigator.standalone;
+
+		if (isStandalone) {
 			setIsInstalled(true);
 		}
 
-		const handler = (e) => {
+		const handleBeforeInstallPrompt = (e) => {
 			e.preventDefault();
 			setDeferredPrompt(e);
 		};
 
-		window.addEventListener("beforeinstallprompt", handler);
+		const handleAppInstalled = () => {
+			setIsInstalled(true);
+			setDeferredPrompt(null);
+		};
 
-		return () =>
-			window.removeEventListener("beforeinstallprompt", handler);
+		window.addEventListener(
+			"beforeinstallprompt",
+			handleBeforeInstallPrompt,
+		);
+		window.addEventListener("appinstalled", handleAppInstalled);
+
+		return () => {
+			window.removeEventListener(
+				"beforeinstallprompt",
+				handleBeforeInstallPrompt,
+			);
+			window.removeEventListener("appinstalled", handleAppInstalled);
+		};
 	}, []);
 
 	const handleInstall = async () => {
-		if (deferredPrompt) {
-			deferredPrompt.prompt();
-			await deferredPrompt.userChoice;
+		if (!deferredPrompt) return;
+
+		deferredPrompt.prompt();
+		const choice = await deferredPrompt.userChoice;
+
+		if (choice.outcome === "accepted") {
 			setDeferredPrompt(null);
-		} else {
-			setShowHint(true);
-			setTimeout(() => setShowHint(false), 4000);
 		}
 	};
 
 	if (isInstalled) return null;
 
 	return (
-		<div className="relative">
-			<button
-				onClick={handleInstall}
-				className="px-4 py-3 hover:bg-gray-800 cursor-pointer block transition w-full text-start"
-			>
-				Install SNS
-			</button>
-		</div>
+		<button
+			onClick={handleInstall}
+			className="px-4 py-3 hover:bg-gray-800 cursor-pointer block transition w-full text-start"
+		>
+			Install SNS
+		</button>
 	);
 }
