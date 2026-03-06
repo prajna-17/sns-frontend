@@ -577,7 +577,7 @@ function Skeletons() {
 
 // ─── Main component ───────────────────────────────────────────────────────────
 export default function ProductsClient() {
-  const [showFilters, setShowFilters] = useState(false);
+  // const [showFilters, setShowFilters] = useState(false);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState({ show: false, msg: "" });
@@ -594,6 +594,7 @@ export default function ProductsClient() {
   const categoryFilter = searchParams.get("category") || "";
   const superCategoryFilter = searchParams.get("superCategory") || "";
   const searchQuery = searchParams.get("search") || "";
+  const sort = searchParams.get("sort") || "";
   const ratingCache = useRef({});
   const getRating = (id) => {
     if (!ratingCache.current[id]) {
@@ -603,24 +604,30 @@ export default function ProductsClient() {
   };
 
   const filteredItems = useMemo(() => {
-    return products.filter((p) => {
+    let items = products.filter((p) => {
       if (searchQuery) {
         const q = searchQuery.toLowerCase();
         if (!p.title?.toLowerCase().includes(q)) return false;
       }
-
-      const rating = Number(getRating(p._id));
-      if (ratingFilter && rating < ratingFilter) return false;
-      const discount = p.oldPrice
-        ? ((p.oldPrice - p.price) / p.oldPrice) * 100
-        : 0;
-
-      if (discountFilter && discount < discountFilter) return false;
-      if (maxPriceFilter && p.price > maxPriceFilter) return false;
-
       return true;
     });
-  }, [products, ratingFilter, discountFilter, maxPriceFilter, searchQuery]);
+
+    if (sort === "low") {
+      items = items.sort((a, b) => a.price - b.price);
+    }
+
+    if (sort === "high") {
+      items = items.sort((a, b) => b.price - a.price);
+    }
+
+    if (sort === "popular") {
+      items = items.sort(
+        (a, b) => Number(getRating(b._id)) - Number(getRating(a._id)),
+      );
+    }
+
+    return items;
+  }, [products, searchQuery, sort]);
   const totalPages = Math.ceil(filteredItems.length / perPage);
   const paginatedItems = filteredItems.slice(
     (page - 1) * perPage,
@@ -676,9 +683,9 @@ export default function ProductsClient() {
   };
 
   // ── filter state for pills (local until Apply) ──
-  const [localRating, setLocalRating] = useState(String(ratingFilter));
-  const [localPrice, setLocalPrice] = useState(String(maxPriceFilter));
-  const [localDiscount, setLocalDiscount] = useState(String(discountFilter));
+  // const [localRating, setLocalRating] = useState(String(ratingFilter));
+  // const [localPrice, setLocalPrice] = useState(String(maxPriceFilter));
+  // const [localDiscount, setLocalDiscount] = useState(String(discountFilter));
 
   const openDrawer = () => {
     setLocalRating(String(ratingFilter));
@@ -733,31 +740,27 @@ export default function ProductsClient() {
 
         {/* FILTER TOGGLE + ACTIVE CHIPS */}
         <div className="pp-filter-toggle">
-          <button className="pp-filter-btn" onClick={openDrawer}>
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-            >
-              <line x1="4" y1="6" x2="20" y2="6" />
-              <line x1="8" y1="12" x2="16" y2="12" />
-              <line x1="11" y1="18" x2="13" y2="18" />
-            </svg>
-            Filters {activeFiltersCount > 0 && `(${activeFiltersCount})`}
+          <button
+            className="pp-filter-btn"
+            onClick={() => updateParam("sort", "low")}
+          >
+            Price: Low → High
           </button>
 
-          {activeChips.length > 0 && (
-            <div className="pp-active-chips">
-              {activeChips.map((c) => (
-                <span key={c} className="pp-chip">
-                  {c}
-                </span>
-              ))}
-            </div>
-          )}
-        </div>
+          <button
+            className="pp-filter-btn"
+            onClick={() => updateParam("sort", "high")}
+          >
+            Price: High → Low
+          </button>
 
+          <button
+            className="pp-filter-btn"
+            onClick={() => updateParam("sort", "popular")}
+          >
+            Popularity
+          </button>
+        </div>
         {/* PRODUCTS GRID */}
         <div className="pp-grid">
           {loading ? (
@@ -835,91 +838,12 @@ export default function ProductsClient() {
         </div>
 
         {/* BACKDROP */}
-        <div
+        {/* <div
           className={`pp-backdrop ${showFilters ? "open" : ""}`}
           onClick={() => setShowFilters(false)}
-        />
+        /> */}
 
         {/* FILTER DRAWER */}
-        <div className={`pp-drawer ${showFilters ? "open" : ""}`}>
-          <div className="pp-drawer-handle" />
-          <div className="pp-drawer-title">
-            Filters
-            <button
-              className="pp-drawer-close"
-              onClick={() => setShowFilters(false)}
-            >
-              ✕
-            </button>
-          </div>
-
-          {/* Rating */}
-          <div className="pp-filter-section">
-            <span className="pp-filter-label">Customer Rating</span>
-            <div className="pp-filter-pills">
-              {[
-                ["0", "Any"],
-                ["3", "3★ & above"],
-                ["4", "4★ & above"],
-                ["4.5", "4.5★ & above"],
-              ].map(([val, label]) => (
-                <button
-                  key={val}
-                  className={`pp-filter-pill ${localRating === val ? "active" : ""}`}
-                  onClick={() => setLocalRating(val)}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Max Price */}
-          <div className="pp-filter-section">
-            <span className="pp-filter-label">Max Price</span>
-            <div className="pp-filter-pills">
-              {[
-                ["0", "Any"],
-                ["10000", "Under ₹10K"],
-                ["20000", "Under ₹20K"],
-                ["30000", "Under ₹30K"],
-              ].map(([val, label]) => (
-                <button
-                  key={val}
-                  className={`pp-filter-pill ${localPrice === val ? "active" : ""}`}
-                  onClick={() => setLocalPrice(val)}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Discount */}
-          <div className="pp-filter-section">
-            <span className="pp-filter-label">Discount</span>
-            <div className="pp-filter-pills">
-              {[
-                ["0", "Any"],
-                ["10", "10%+"],
-                ["20", "20%+"],
-                ["30", "30%+"],
-              ].map(([val, label]) => (
-                <button
-                  key={val}
-                  className={`pp-filter-pill ${localDiscount === val ? "active" : ""}`}
-                  onClick={() => setLocalDiscount(val)}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <button className="pp-apply-btn" onClick={applyFilters}>
-            Apply Filters ✦
-          </button>
-        </div>
       </div>
 
       <Toast show={toast.show} message={toast.msg} />
