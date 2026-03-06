@@ -637,6 +637,12 @@ export default function CheckoutPage() {
 
     const user = JSON.parse(localStorage.getItem("userData")) || {};
     setUserEmail(user.email);
+    const savedAddresses =
+      JSON.parse(localStorage.getItem(`addresses_${user.email}`)) || [];
+
+    if (savedAddresses.length > 0) {
+      setAddress(savedAddresses[0]); // auto fill checkout address
+    }
   }, []);
 
   if (!mounted) return null;
@@ -750,7 +756,7 @@ export default function CheckoutPage() {
                 className={`ck2-edit-btn${address ? " filled" : ""}`}
                 onClick={() => setDrawer(true)}
               >
-                {address ? "Change" : "+ Add"}
+                {address ? "Edit" : "+ Add Address"}
               </button>
             </div>
           </div>
@@ -866,8 +872,7 @@ export default function CheckoutPage() {
 
             const existing = JSON.parse(localStorage.getItem(key)) || [];
 
-            const updated = [...existing, { ...addr, id: Date.now() }];
-
+            const updated = [{ ...addr, id: Date.now() }];
             localStorage.setItem(key, JSON.stringify(updated));
 
             setAddress(addr);

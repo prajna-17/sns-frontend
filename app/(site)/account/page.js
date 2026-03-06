@@ -599,7 +599,7 @@ export default function AccountPage() {
       return;
     }
 
-    const newAddresses = [...addresses, { ...addressForm, id: Date.now() }];
+    const newAddresses = [{ ...addressForm, id: Date.now() }];
     setAddresses(newAddresses);
     const user = JSON.parse(localStorage.getItem("userData"));
     const email = user?.email;
