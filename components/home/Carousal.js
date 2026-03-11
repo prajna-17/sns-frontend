@@ -64,12 +64,12 @@ export default function Carousel() {
   padding: 0;          /* add this */
   border-radius: 0;    /* remove rounded outer gap */
   overflow: hidden;
-  height: 320px;      /* increase banner size */
+  height: 280px;      /* increase banner size */
   width: 100%;        /* full width */
   box-shadow: none;   /* optional: removes outer shadow */
 }
 
-       .carousel-slide {
+        .carousel-slide {
   position: absolute;
   inset: 0;
   width: 100%;
