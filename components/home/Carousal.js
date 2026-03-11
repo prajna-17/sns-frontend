@@ -6,8 +6,8 @@ import { useRouter } from "next/navigation";
 
 const banners = [
   { src: "/img/b1.png", superCategory: "699d7db8b47815543edfa29c" },
-  { src: "/img/b3.png", superCategory: "699d7db8b47815543edfa29c" },
-  { src: "/img/b2.png", superCategory: "699d8b96faa37050c8fbf346" },
+  { src: "/img/b2.png", superCategory: "699d7db8b47815543edfa29c" },
+  { src: "/img/b3.png", superCategory: "699d8b96faa37050c8fbf346" },
   { src: "/img/b4.png", superCategory: "699d7db8b47815543edfa29c" },
 ];
 
