@@ -58,25 +58,27 @@ export default function Carousel() {
       <style>{`
 
         /* ── Banner ── */
-        .carousel-outer {
-          position: relative;
-margin: 0;          border-radius: 24px;
-          overflow: hidden;
-          height: 210px;
-          box-shadow: 0 8px 32px rgba(0,0,0,0.13);
-        }
+       .carousel-outer {
+  position: relative;
+  margin: 0;
+  padding: 0;          /* add this */
+  border-radius: 0;    /* remove rounded outer gap */
+  overflow: hidden;
+  height: 320px;      /* increase banner size */
+  width: 100%;        /* full width */
+  box-shadow: none;   /* optional: removes outer shadow */
+}
 
-        .carousel-slide {
-          position: absolute;
-          inset: 0;
-          width: 100%;
-          height: 100%;
-object-fit: contain;          cursor: pointer;
-          transition: opacity 0.7s cubic-bezier(0.4,0,0.2,1),
-                      transform 0.7s cubic-bezier(0.4,0,0.2,1);
-          will-change: opacity, transform;
-          border-radius: 24px;
-        }
+       .carousel-slide {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;   /* change from contain → cover */
+  cursor: pointer;
+  transition: opacity 0.7s cubic-bezier(0.4,0,0.2,1),
+              transform 0.7s cubic-bezier(0.4,0,0.2,1);
+}
 
         .carousel-slide.entering {
           opacity: 0;
