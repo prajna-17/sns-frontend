@@ -62,7 +62,7 @@ export default function Carousel() {
   position: relative;
   margin: 0;
   padding: 0;          /* add this */
-  border-radius: 20;    /* remove rounded outer gap */
+  border-radius: 20px;    /* remove rounded outer gap */
   overflow: hidden;
   height: 280px;      /* increase banner size */
   width: 100%;        /* full width */
